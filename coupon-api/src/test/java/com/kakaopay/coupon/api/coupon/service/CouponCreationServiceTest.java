@@ -1,7 +1,8 @@
-package com.kakaopay.coupon.api.coupon;
+package com.kakaopay.coupon.api.coupon.service;
 
 import com.kakaopay.coupon.api.common.ApiService;
 import com.kakaopay.coupon.api.common.model.ApiResponse;
+import com.kakaopay.coupon.api.coupon.service.CouponCreationService;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
 import com.kakaopay.coupon.api.util.CodeGenerator;
@@ -12,7 +13,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 import static org.mockito.BDDMockito.*;
 
@@ -30,7 +34,7 @@ class CouponCreationServiceTest {
     private CodeGenerator codeGenerator;
 
     @Test
-    void 저장_성공() {
+    void 단건_저장_성공() {
         // given
         CouponEntity couponEntity =
                 CouponEntity.builder()
@@ -56,7 +60,7 @@ class CouponCreationServiceTest {
     }
 
     @Test
-    void 저장_실패(){
+    void 단건_저장_실패(){
         // given
         CouponEntity couponEntity =
                 CouponEntity.builder()
@@ -73,6 +77,37 @@ class CouponCreationServiceTest {
             // when
             ApiResponse apiResponse = couponCreationService.save();
         });
+    }
+
+    @Test
+    void 다수_저장_성공() {
+        // given
+        long count = 5L;
+
+        List<CouponEntity> couponEntities =
+                LongStream.range(0, count)
+                        .mapToObj(i ->
+                                CouponEntity.builder()
+                                        .code("test-code" + i)
+                                        .build())
+                        .collect(Collectors.toList());
+
+        given(codeGenerator.generate())
+                .willReturn("test-code");
+        given(couponRepository.findByCode(anyString()))
+                .willReturn(Optional.empty());
+        given(couponRepository.saveAll(anyCollection()))
+                .willReturn(couponEntities);
+        given(apiService.createSuccessResponse(anyCollection()))
+                .willReturn(ApiResponse.from(200, "성공", couponEntities));
+
+        // when
+        ApiResponse apiResponse = couponCreationService.saves(count);
+
+        // then
+        assertEquals(200, apiResponse.getStatus());
+        assertEquals("성공", apiResponse.getMessage());
+        assertIterableEquals(couponEntities, ((List<CouponEntity>) apiResponse.getData()));
     }
 
     @Test

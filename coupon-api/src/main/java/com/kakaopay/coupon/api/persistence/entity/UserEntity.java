@@ -1,9 +1,6 @@
 package com.kakaopay.coupon.api.persistence.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -20,7 +17,7 @@ public class UserEntity {
     @Column(name = "no")
     private Long no;
 
-    @Column(name = "id", length = 20, nullable = false)
+    @Column(name = "id", length = 20, nullable = false, unique = true)
     private String id;
 
     @Column(name = "password", nullable = false)
@@ -28,4 +25,12 @@ public class UserEntity {
 
     @Column(name = "salt", length = 40, nullable = false)
     private String salt;
+
+    @Builder
+    public UserEntity(Long no, String id, String password, String salt) {
+        this.no = no;
+        this.id = id;
+        this.password = password;
+        this.salt = salt;
+    }
 }

@@ -1,7 +1,8 @@
-package com.kakaopay.coupon.api.coupon;
+package com.kakaopay.coupon.api.coupon.service;
 
 import com.kakaopay.coupon.api.common.ApiService;
 import com.kakaopay.coupon.api.common.model.ApiResponse;
+import com.kakaopay.coupon.api.coupon.service.CouponService;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
 import org.junit.jupiter.api.Test;

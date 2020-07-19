@@ -18,7 +18,7 @@ public class CouponEntity {
     @Column(name = "no")
     private Long no;
 
-    @Column(name = "code", length = 30, nullable = false)
+    @Column(name = "code", length = 30, nullable = false, unique = true)
     private String code;
 
     @Column(name = "created_date", nullable = false)
@@ -53,5 +53,15 @@ public class CouponEntity {
     private void onCreation() {
         this.createdDate = LocalDateTime.now();
         this.status = Status.CREATED;
+    }
+
+    public CouponEntity publishToUser(Long userNo) {
+        LocalDateTime now = LocalDateTime.now();
+        this.publishedDate = now;
+        this.expirationDate = now.plusHours(1L);
+        this.status = Status.PUBLISHED;
+        this.userNo = userNo;
+
+        return this;
     }
 }
