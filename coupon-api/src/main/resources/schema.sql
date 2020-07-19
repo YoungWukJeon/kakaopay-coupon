@@ -1,0 +1,18 @@
+
+
+CREATE TABLE IF NOT EXISTS user (
+    no BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id VARCHAR(20) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    salt VARCHAR(40) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS coupon (
+    no BIGINT PRIMARY KEY AUTO_INCREMENT,
+    code VARCHAR(30) NOT NULL UNIQUE,
+    created_date DATETIME NOT NULL,
+    published_date DATETIME,
+    expiration_date DATETIME,
+    status VARCHAR(20) NOT NULL,
+    user_no BIGINT
+);
