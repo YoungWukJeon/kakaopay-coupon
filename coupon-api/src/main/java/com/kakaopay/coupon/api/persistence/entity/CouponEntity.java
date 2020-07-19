@@ -52,5 +52,6 @@ public class CouponEntity {
     @PrePersist
     private void onCreation() {
         this.createdDate = LocalDateTime.now();
+        this.status = Status.CREATED;
     }
 }
