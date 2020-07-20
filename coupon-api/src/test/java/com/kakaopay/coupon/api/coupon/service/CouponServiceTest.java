@@ -1,7 +1,6 @@
 package com.kakaopay.coupon.api.coupon.service;
 
-import com.kakaopay.coupon.api.common.ApiService;
-import com.kakaopay.coupon.api.common.model.ApiResponse;
+import com.kakaopay.coupon.api.coupon.model.response.CouponResponse;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static org.mockito.BDDMockito.*;
 
@@ -26,8 +26,6 @@ class CouponServiceTest {
     @Mock
     private CouponRepository couponRepository;
     @Mock
-    private ApiService apiService;
-    @Mock
     private CouponEntity couponEntity;
 
     @Test
@@ -35,16 +33,12 @@ class CouponServiceTest {
         // given
         given(couponRepository.findAll())
                 .willReturn(Collections.emptyList());
-        given(apiService.createSuccessResponse(anyCollection()))
-                .willReturn(ApiResponse.from(200, "성공", Collections.emptyList()));
 
         // when
-        ApiResponse apiResponse = couponService.findAll();
+        List<CouponResponse> couponResponses = couponService.findAll();
 
         // then
-        assertEquals(200, apiResponse.getStatus());
-        assertEquals("성공", apiResponse.getMessage());
-        assertEquals(Collections.emptyList(), apiResponse.getData());
+        assertEquals(Collections.emptyList(), couponResponses);
     }
 
     @Test
@@ -53,16 +47,14 @@ class CouponServiceTest {
         String code = anyString();
         given(couponRepository.findByCode(code))
                 .willReturn(Optional.of(couponEntity));
-        given(apiService.createSuccessResponse(any()))
-                .willReturn(ApiResponse.from(200, "성공", couponEntity));
 
         // when
-        ApiResponse apiResponse = couponService.findByCode(code);
+        CouponResponse couponResponse = couponService.findByCode(code);
 
         // then
-        assertEquals(200, apiResponse.getStatus());
-        assertEquals("성공", apiResponse.getMessage());
-        assertEquals(couponEntity, apiResponse.getData());
+        assertEquals(couponEntity.getNo(), couponResponse.getNo());
+        assertEquals(couponEntity.getCode(), couponResponse.getCode());
+        assertEquals(couponEntity.getStatus(), couponResponse.getStatus());
     }
 
     @Test
@@ -75,7 +67,7 @@ class CouponServiceTest {
         // then
         assertThrows(RuntimeException.class, () -> {
             // when
-            ApiResponse apiResponse = couponService.findByCode(code);
+            couponService.findByCode(code);
         });
     }
 
@@ -84,33 +76,24 @@ class CouponServiceTest {
         // given
         Long userNo = anyLong();
         couponEntity.publishToUser(userNo);
-        given(couponRepository.findByUserNo(userNo))
-                .willReturn(Optional.of(couponEntity));
-        given(apiService.createSuccessResponse(any()))
-                .willReturn(ApiResponse.from(200, "성공", couponEntity));
+        List<CouponEntity> couponEntities = List.of(couponEntity);
+
+        given(couponRepository.findAllByUserNo(anyLong()))
+                .willReturn(couponEntities);
 
         // when
-        ApiResponse apiResponse = couponService.findByUserNo(userNo);
+        List<CouponResponse> couponResponses = couponService.findAllByUserNo(userNo);
 
         // then
-        assertEquals(200, apiResponse.getStatus());
-        assertEquals("성공", apiResponse.getMessage());
-        assertEquals(couponEntity, apiResponse.getData());
-    }
-
-    @Test
-    void 존재하지_않는_user로_쿠폰_조회() {
-        // given
-        Long userNo = anyLong();
-        couponEntity.publishToUser(userNo);
-        given(couponRepository.findByUserNo(userNo))
-                .willReturn(Optional.empty());
-
-        // then
-        assertThrows(RuntimeException.class, () -> {
-            // when
-            ApiResponse apiResponse = couponService.findByUserNo(userNo);
-        });
+        assertEquals(couponEntities.size(), couponResponses.size());
+        IntStream.range(0, couponEntities.size())
+                .forEach(i -> {
+                    CouponEntity couponEntity = couponEntities.get(i);
+                    CouponResponse couponResponse = couponResponses.get(i);
+                    assertEquals(couponEntity.getNo(), couponResponse.getNo());
+                    assertEquals(couponEntity.getCode(), couponResponse.getCode());
+                    assertEquals(couponEntity.getStatus(), couponResponse.getStatus());
+                });
     }
 
     @Test
@@ -130,16 +113,23 @@ class CouponServiceTest {
         LocalDateTime dateTime = LocalDateTime.now();
         couponEntity.publishToUser(anyLong());
         couponEntity.expireCoupon();
+        List<CouponEntity> couponEntities = List.of(couponEntity);
 
         given(couponRepository.findAllByStatusAndExpirationDateBetween(any(), any(), any()))
                 .willReturn(List.of(couponEntity));
-        given(apiService.createSuccessResponse(anyCollection()))
-                .willReturn(ApiResponse.from(200, "성공", List.of(couponEntity)));
 
         // when
-        ApiResponse apiResponse = couponService.findAllByExpirationDateBetweenToday(dateTime);
+        List<CouponResponse> couponResponses = couponService.findAllByExpirationDateBetweenToday(dateTime);
 
         // then
-        assertIterableEquals(List.of(couponEntity), (List<CouponEntity>) apiResponse.getData());
+        assertEquals(couponEntities.size(), couponResponses.size());
+        IntStream.range(0, couponEntities.size())
+                .forEach(i -> {
+                    CouponEntity couponEntity = couponEntities.get(i);
+                    CouponResponse couponResponse = couponResponses.get(i);
+                    assertEquals(couponEntity.getNo(), couponResponse.getNo());
+                    assertEquals(couponEntity.getCode(), couponResponse.getCode());
+                    assertEquals(couponEntity.getStatus(), couponResponse.getStatus());
+                });
     }
 }

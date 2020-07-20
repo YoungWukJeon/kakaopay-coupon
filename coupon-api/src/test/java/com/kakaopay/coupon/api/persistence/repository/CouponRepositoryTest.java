@@ -17,10 +17,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class CouponRepositoryTest {
     @Autowired
     private CouponRepository couponRepository;
-    private CouponEntity savedCouponEntity;
-
     @Autowired
     private TestEntityManager testEntityManager;
+
+    private CouponEntity savedCouponEntity;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -93,19 +93,16 @@ class CouponRepositoryTest {
     @Test
     void 존재하는_user의_쿠폰_목록_조회() {
         Long userNo = 1L;
-        savedCouponEntity.publishToUser(userNo);
         testEntityManager.persistAndFlush(savedCouponEntity);
+        savedCouponEntity.publishToUser(userNo);
 
-        CouponEntity couponEntity = couponRepository.findByUserNo(userNo).orElseThrow();
+        List<CouponEntity> couponEntities = couponRepository.findAllByUserNo(userNo);
+        CouponEntity couponEntity = couponEntities.get(0);
+
+        assertEquals(savedCouponEntity.getNo(), couponEntity.getNo());
+        assertEquals(savedCouponEntity.getCode(), couponEntity.getCode());
+        assertEquals(savedCouponEntity.getStatus(), couponEntity.getStatus());
         assertEquals(savedCouponEntity.getUserNo(), couponEntity.getUserNo());
-    }
-
-    @Test
-    void 존재하지_않는_user의_쿠폰_목록_조회() {
-        Long userNo = 1L;
-        assertThrows(RuntimeException.class, () -> {
-            CouponEntity couponEntity = couponRepository.findByUserNo(userNo).orElseThrow();
-        });
     }
 
     @Test
