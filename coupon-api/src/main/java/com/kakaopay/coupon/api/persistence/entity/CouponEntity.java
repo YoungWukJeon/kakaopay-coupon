@@ -27,6 +27,9 @@ public class CouponEntity {
     @Column(name = "published_date")
     private LocalDateTime publishedDate;
 
+    @Column(name = "using_date")
+    private LocalDateTime usingDate;
+
     @Column(name = "expiration_date")
     private LocalDateTime expirationDate;
 
@@ -38,7 +41,7 @@ public class CouponEntity {
     private Long userNo;
 
     public enum Status {
-        CREATED, PUBLISHED, USED, EXPIRED
+        CREATED, PUBLISHED, USING, USED, EXPIRED
     }
 
     @Builder
@@ -61,7 +64,23 @@ public class CouponEntity {
         this.expirationDate = now.plusHours(1L);
         this.status = Status.PUBLISHED;
         this.userNo = userNo;
+        return this;
+    }
 
+    public CouponEntity useCoupon() {
+        this.status = Status.USING;
+        this.usingDate = LocalDateTime.now();
+        return this;
+    }
+
+    public CouponEntity cancelCoupon() {
+        this.status = Status.PUBLISHED;
+        this.usingDate = null;
+        return this;
+    }
+
+    public CouponEntity expireCoupon() {
+        this.status = Status.EXPIRED;
         return this;
     }
 }

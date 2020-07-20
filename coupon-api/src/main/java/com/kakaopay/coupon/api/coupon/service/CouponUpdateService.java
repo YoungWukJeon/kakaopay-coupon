@@ -35,6 +35,30 @@ public class CouponUpdateService {
                 convertCouponEntityToCouponResponse(couponEntity));
     }
 
+    // TODO: 2020-07-20 예외 처리
+    @Transactional
+    public ApiResponse useCoupon(String code) {
+        CouponEntity couponEntity = couponRepository.saveAndFlush(
+                couponRepository.findByCode(code)
+                        .orElseThrow()
+                        .useCoupon());
+
+        return apiService.createSuccessResponse(
+                convertCouponEntityToCouponResponse(couponEntity));
+    }
+
+    // TODO: 2020-07-21 예외 처리
+    @Transactional
+    public ApiResponse cancelCoupon(String code) {
+        CouponEntity couponEntity = couponRepository.saveAndFlush(
+                couponRepository.findByCodeAndStatus(code, Status.USING)
+                        .orElseThrow()
+                        .cancelCoupon());
+
+        return apiService.createSuccessResponse(
+                convertCouponEntityToCouponResponse(couponEntity));
+    }
+
     private CouponResponse convertCouponEntityToCouponResponse(CouponEntity couponEntity) {
         return CouponResponse.from(
                 couponEntity.getNo(), couponEntity.getCode(),

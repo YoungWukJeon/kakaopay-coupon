@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS coupon (
     code VARCHAR(30) NOT NULL UNIQUE,
     created_date DATETIME NOT NULL,
     published_date DATETIME,
+    using_date DATETIME,
     expiration_date DATETIME,
     status VARCHAR(20) NOT NULL,
     user_no BIGINT

@@ -8,6 +8,7 @@ import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,9 +24,7 @@ public class CouponService {
 
         return apiService.createSuccessResponse(
                 couponEntities.stream()
-                        .peek(System.out::println)
                         .map(this::convertCouponEntityToCouponResponse)
-                        .peek(System.out::println)
                         .collect(Collectors.toList())
         );
     }
@@ -36,6 +35,23 @@ public class CouponService {
 
         return apiService.createSuccessResponse(
                 convertCouponEntityToCouponResponse(couponEntity));
+    }
+
+    // TODO: 2020-07-20 예외 처리
+    public ApiResponse findByUserNo(Long userNo) {
+        CouponEntity couponEntity = couponRepository.findByUserNo(userNo).orElseThrow();
+
+        return apiService.createSuccessResponse(
+                convertCouponEntityToCouponResponse(couponEntity));
+    }
+
+    public ApiResponse findAllByExpirationDateBetweenToday(LocalDateTime dateTime) {
+        LocalDateTime date = LocalDateTime.of(dateTime.getYear(), dateTime.getMonth(), dateTime.getDayOfMonth(), 0, 0, 0);
+        List<CouponEntity> couponEntities = couponRepository.findAllByStatusAndExpirationDateBetween(CouponEntity.Status.EXPIRED, date, dateTime);
+        return apiService.createSuccessResponse(
+                couponEntities.stream()
+                        .map(this::convertCouponEntityToCouponResponse)
+                        .collect(Collectors.toList()));
     }
 
     // TODO: 2020-07-19 테스트 코드 필요

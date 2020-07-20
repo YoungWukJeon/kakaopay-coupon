@@ -90,4 +90,89 @@ class CouponUpdateServiceTest {
             ApiResponse apiResponse = couponUpdateService.publishToUser(userNo);
         });
     }
+
+    @Test
+    void 쿠폰_사용_성공() {
+        // given
+        CouponEntity couponEntity =
+                CouponEntity.builder()
+                        .code("test-code")
+                        .build();
+        CouponEntity usingCouponEntity =
+                CouponEntity.builder()
+                        .code("test-code")
+                        .status(Status.USING)
+                        .build();
+
+        given(couponRepository.findByCode(anyString()))
+                .willReturn(Optional.of(couponEntity));
+        given(couponRepository.saveAndFlush(any()))
+                .willReturn(usingCouponEntity);
+        given(apiService.createSuccessResponse(any()))
+                .willReturn(ApiResponse.from(200, "성공", usingCouponEntity));
+
+        // when
+        ApiResponse apiResponse = couponUpdateService.useCoupon("test-code");
+        CouponEntity responseCouponEntity = (CouponEntity) apiResponse.getData();
+
+        // then
+        assertEquals(Status.USING, responseCouponEntity.getStatus());
+        assertEquals("test-code", ((CouponEntity) apiResponse.getData()).getCode());
+    }
+
+    @Test
+    void 존재하지_않는_쿠폰으로_사용_실패() {
+        // given
+        given(couponRepository.findByCode(anyString()))
+                .willReturn(Optional.empty());
+
+        // then
+        assertThrows(RuntimeException.class, () -> {
+            // when
+            ApiResponse apiResponse = couponUpdateService.useCoupon("test-code");
+        });
+    }
+
+    @Test
+    void 쿠폰_취소_성공() {
+        // given
+        CouponEntity couponEntity =
+                CouponEntity.builder()
+                        .code("test-code")
+                        .status(Status.USING)
+                        .build();
+        CouponEntity usingCouponEntity =
+                CouponEntity.builder()
+                        .code("test-code")
+                        .status(Status.PUBLISHED)
+                        .build();
+
+        given(couponRepository.findByCodeAndStatus(anyString(), any()))
+                .willReturn(Optional.of(couponEntity));
+        given(couponRepository.saveAndFlush(any()))
+                .willReturn(usingCouponEntity);
+        given(apiService.createSuccessResponse(any()))
+                .willReturn(ApiResponse.from(200, "성공", usingCouponEntity));
+
+        // when
+        ApiResponse apiResponse = couponUpdateService.cancelCoupon("test-code");
+        CouponEntity responseCouponEntity = (CouponEntity) apiResponse.getData();
+
+        // then
+        assertEquals(Status.PUBLISHED, responseCouponEntity.getStatus());
+        assertEquals("test-code", ((CouponEntity) apiResponse.getData()).getCode());
+    }
+
+    @Test
+    void 존재하지_않는_쿠폰이거나_status가_USING이_아니어서_취소_실패() {
+        // given
+        given(couponRepository.findByCodeAndStatus(anyString(), any()))
+                .willReturn(Optional.empty());
+
+        // then
+        assertThrows(RuntimeException.class, () -> {
+            // when
+            ApiResponse apiResponse = couponUpdateService.cancelCoupon("test-code");
+        });
+    }
 }

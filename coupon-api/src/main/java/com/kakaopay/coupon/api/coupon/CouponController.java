@@ -7,6 +7,8 @@ import com.kakaopay.coupon.api.coupon.service.CouponUpdateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping(value = "/coupon")
 public class CouponController {
@@ -40,5 +42,25 @@ public class CouponController {
     @PutMapping(value = "/user")
     public ApiResponse publishToUser(@RequestBody Long userNo) {
         return couponUpdateService.publishToUser(userNo);
+    }
+
+    @GetMapping(value = "/user/{userNo}")
+    public ApiResponse getCouponByUserNo(@PathVariable Long userNo) {
+        return couponService.findByUserNo(userNo);
+    }
+
+    @PutMapping(value = "/{code}/use")
+    public ApiResponse useCoupon(@PathVariable String code) {
+        return couponUpdateService.useCoupon(code);
+    }
+
+    @PutMapping(value = "/{code}/cancel")
+    public ApiResponse cancelCoupon(@PathVariable String code) {
+        return couponUpdateService.cancelCoupon(code);
+    }
+
+    @GetMapping(value = "/today/expiration")
+    public ApiResponse getExpiredCouponsToday() {
+        return couponService.findAllByExpirationDateBetweenToday(LocalDateTime.now());
     }
 }
