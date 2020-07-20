@@ -2,7 +2,7 @@ package com.kakaopay.coupon.api.user;
 
 import com.kakaopay.coupon.api.persistence.entity.UserEntity;
 import com.kakaopay.coupon.api.persistence.repository.UserRepository;
-import com.kakaopay.coupon.api.user.model.response.UserResponse;
+import com.kakaopay.coupon.api.user.model.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,10 +35,10 @@ class UserServiceTest {
                 .willReturn(Optional.of(userEntity));
 
         // when
-        UserResponse userResponse = userService.findByNo(no);
+        UserDto userDto = userService.findByNo(no);
 
         // then
-        assertEquals(userResponse.getNo(), userEntity.getNo());
+        assertEquals(userDto.getNo(), userEntity.getNo());
     }
 
     @Test
@@ -51,7 +51,7 @@ class UserServiceTest {
         // then
         assertThrows(RuntimeException.class, () -> {
             // when
-            UserResponse userResponse = userService.findByNo(no);
+            userService.findByNo(no);
         });
     }
 
