@@ -2,7 +2,7 @@ package com.kakaopay.coupon.api.coupon.service;
 
 import com.kakaopay.coupon.api.common.ApiService;
 import com.kakaopay.coupon.api.common.model.ApiResponse;
-import com.kakaopay.coupon.api.coupon.model.response.CouponResponse;
+import com.kakaopay.coupon.api.coupon.model.CouponDto;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity.Status;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
@@ -59,10 +59,7 @@ public class CouponUpdateService {
                 convertCouponEntityToCouponResponse(couponEntity));
     }
 
-    private CouponResponse convertCouponEntityToCouponResponse(CouponEntity couponEntity) {
-        return CouponResponse.from(
-                couponEntity.getNo(), couponEntity.getCode(),
-                couponEntity.getCreatedDate(), couponEntity.getPublishedDate(), couponEntity.getExpirationDate(),
-                couponEntity.getStatus(), couponEntity.getUserNo());
+    private CouponDto convertCouponEntityToCouponResponse(CouponEntity couponEntity) {
+        return CouponDto.from(couponEntity);
     }
 }

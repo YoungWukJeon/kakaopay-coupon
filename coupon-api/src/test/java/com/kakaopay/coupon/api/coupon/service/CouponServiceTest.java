@@ -1,6 +1,6 @@
 package com.kakaopay.coupon.api.coupon.service;
 
-import com.kakaopay.coupon.api.coupon.model.response.CouponResponse;
+import com.kakaopay.coupon.api.coupon.model.CouponDto;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
 import org.junit.jupiter.api.Test;
@@ -35,10 +35,10 @@ class CouponServiceTest {
                 .willReturn(Collections.emptyList());
 
         // when
-        List<CouponResponse> couponResponses = couponService.findAll();
+        List<CouponDto> couponDtos = couponService.findAll();
 
         // then
-        assertEquals(Collections.emptyList(), couponResponses);
+        assertEquals(Collections.emptyList(), couponDtos);
     }
 
     @Test
@@ -49,12 +49,12 @@ class CouponServiceTest {
                 .willReturn(Optional.of(couponEntity));
 
         // when
-        CouponResponse couponResponse = couponService.findByCode(code);
+        CouponDto couponDto = couponService.findByCode(code);
 
         // then
-        assertEquals(couponEntity.getNo(), couponResponse.getNo());
-        assertEquals(couponEntity.getCode(), couponResponse.getCode());
-        assertEquals(couponEntity.getStatus(), couponResponse.getStatus());
+        assertEquals(couponEntity.getNo(), couponDto.getNo());
+        assertEquals(couponEntity.getCode(), couponDto.getCode());
+        assertEquals(couponEntity.getStatus(), couponDto.getStatus());
     }
 
     @Test
@@ -82,17 +82,17 @@ class CouponServiceTest {
                 .willReturn(couponEntities);
 
         // when
-        List<CouponResponse> couponResponses = couponService.findAllByUserNo(userNo);
+        List<CouponDto> couponDtos = couponService.findAllByUserNo(userNo);
 
         // then
-        assertEquals(couponEntities.size(), couponResponses.size());
+        assertEquals(couponEntities.size(), couponDtos.size());
         IntStream.range(0, couponEntities.size())
                 .forEach(i -> {
                     CouponEntity couponEntity = couponEntities.get(i);
-                    CouponResponse couponResponse = couponResponses.get(i);
-                    assertEquals(couponEntity.getNo(), couponResponse.getNo());
-                    assertEquals(couponEntity.getCode(), couponResponse.getCode());
-                    assertEquals(couponEntity.getStatus(), couponResponse.getStatus());
+                    CouponDto couponDto = couponDtos.get(i);
+                    assertEquals(couponEntity.getNo(), couponDto.getNo());
+                    assertEquals(couponEntity.getCode(), couponDto.getCode());
+                    assertEquals(couponEntity.getStatus(), couponDto.getStatus());
                 });
     }
 
@@ -119,17 +119,17 @@ class CouponServiceTest {
                 .willReturn(List.of(couponEntity));
 
         // when
-        List<CouponResponse> couponResponses = couponService.findAllByExpirationDateBetweenToday(dateTime);
+        List<CouponDto> couponDtos = couponService.findAllByExpirationDateBetweenToday(dateTime);
 
         // then
-        assertEquals(couponEntities.size(), couponResponses.size());
+        assertEquals(couponEntities.size(), couponDtos.size());
         IntStream.range(0, couponEntities.size())
                 .forEach(i -> {
                     CouponEntity couponEntity = couponEntities.get(i);
-                    CouponResponse couponResponse = couponResponses.get(i);
-                    assertEquals(couponEntity.getNo(), couponResponse.getNo());
-                    assertEquals(couponEntity.getCode(), couponResponse.getCode());
-                    assertEquals(couponEntity.getStatus(), couponResponse.getStatus());
+                    CouponDto couponDto = couponDtos.get(i);
+                    assertEquals(couponEntity.getNo(), couponDto.getNo());
+                    assertEquals(couponEntity.getCode(), couponDto.getCode());
+                    assertEquals(couponEntity.getStatus(), couponDto.getStatus());
                 });
     }
 }
