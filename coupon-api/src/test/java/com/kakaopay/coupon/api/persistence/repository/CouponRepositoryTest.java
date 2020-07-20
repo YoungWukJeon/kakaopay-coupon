@@ -40,7 +40,7 @@ class CouponRepositoryTest {
     @Test
     void 존재하지_않는_코드로_쿠폰_조회() {
         assertThrows(RuntimeException.class, () -> {
-            CouponEntity couponEntity = couponRepository.findByCode("test-coupon").orElseThrow();
+            couponRepository.findByCode("test-coupon").orElseThrow();
         });
     }
 
@@ -56,7 +56,7 @@ class CouponRepositoryTest {
     void 코드나_status가_일치하지_않는_쿠폰_조회() {
         testEntityManager.persistAndFlush(savedCouponEntity);
         assertThrows(RuntimeException.class, () -> {
-            CouponEntity couponEntity = couponRepository.findByCodeAndStatus("test-coupon", Status.PUBLISHED).orElseThrow();
+            couponRepository.findByCodeAndStatus("test-coupon", Status.PUBLISHED).orElseThrow();
         });
     }
 
@@ -70,7 +70,7 @@ class CouponRepositoryTest {
     @Test
     void 생성만_된_쿠폰_조회_실패() {
         assertThrows(RuntimeException.class, () -> {
-            CouponEntity couponEntity = couponRepository.findByStatus(Status.CREATED).orElseThrow();
+            couponRepository.findByStatus(Status.CREATED).orElseThrow();
         });
     }
 
@@ -86,7 +86,7 @@ class CouponRepositoryTest {
     @Test
     void user에게_할당되지_않은_쿠폰_top1_조회_실패() {
         assertThrows(RuntimeException.class, () -> {
-            CouponEntity couponEntity = couponRepository.findTop1ByStatus(Status.CREATED).orElseThrow();
+            couponRepository.findTop1ByStatus(Status.CREATED).orElseThrow();
         });
     }
 
