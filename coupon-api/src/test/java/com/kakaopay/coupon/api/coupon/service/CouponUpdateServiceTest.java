@@ -97,6 +97,7 @@ class CouponUpdateServiceTest {
         CouponEntity couponEntity =
                 CouponEntity.builder()
                         .code("test-code")
+                        .status(Status.PUBLISHED)
                         .build();
         CouponEntity usingCouponEntity =
                 CouponEntity.builder()
@@ -104,7 +105,7 @@ class CouponUpdateServiceTest {
                         .status(Status.USING)
                         .build();
 
-        given(couponRepository.findByCode(anyString()))
+        given(couponRepository.findByCodeAndStatus(anyString(), any()))
                 .willReturn(Optional.of(couponEntity));
         given(couponRepository.saveAndFlush(any()))
                 .willReturn(usingCouponEntity);
@@ -123,7 +124,7 @@ class CouponUpdateServiceTest {
     @Test
     void 존재하지_않는_쿠폰으로_사용_실패() {
         // given
-        given(couponRepository.findByCode(anyString()))
+        given(couponRepository.findByCodeAndStatus(anyString(), any()))
                 .willReturn(Optional.empty());
 
         // then

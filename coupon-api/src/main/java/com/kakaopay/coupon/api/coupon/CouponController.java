@@ -39,8 +39,8 @@ public class CouponController {
         return couponCreationService.saves(count);
     }
 
-    @PutMapping(value = "/user")
-    public ApiResponse publishToUser(@RequestBody Long userNo) {
+    @PutMapping(value = "/user/{userNo}")
+    public ApiResponse publishToUser(@PathVariable Long userNo) {
         return couponUpdateService.publishToUser(userNo);
     }
 

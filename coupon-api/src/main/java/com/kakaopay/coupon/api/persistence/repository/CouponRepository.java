@@ -16,6 +16,5 @@ public interface CouponRepository extends JpaRepository<CouponEntity, Long> {
     Optional<CouponEntity> findByStatus(Status status);
     Optional<CouponEntity> findTop1ByStatus(Status status);
     Optional<CouponEntity> findByUserNo(Long userNo);
-    List<CouponEntity> findAllByExpirationDateBetween(LocalDateTime startDate, LocalDateTime endDate);
     List<CouponEntity> findAllByStatusAndExpirationDateBetween(Status status, LocalDateTime startDate, LocalDateTime endDate);
 }

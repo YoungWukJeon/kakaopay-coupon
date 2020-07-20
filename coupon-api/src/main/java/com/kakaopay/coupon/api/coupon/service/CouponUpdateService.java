@@ -39,7 +39,7 @@ public class CouponUpdateService {
     @Transactional
     public ApiResponse useCoupon(String code) {
         CouponEntity couponEntity = couponRepository.saveAndFlush(
-                couponRepository.findByCode(code)
+                couponRepository.findByCodeAndStatus(code, Status.PUBLISHED)
                         .orElseThrow()
                         .useCoupon());
 
