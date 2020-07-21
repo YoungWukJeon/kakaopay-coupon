@@ -8,7 +8,7 @@ class CouponApiApplicationTests {
 
 	@Test
 	void contextLoads() {
-
+		System.out.println("Boot Success!!");
 	}
 
 }

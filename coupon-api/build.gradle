@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.kakaopay'
-version = '0.0.1-SNAPSHOT'
+//version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
@@ -23,6 +23,14 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
+
+	// random string generator
+	implementation 'org.apache.commons:commons-lang3:3.4'
+
+	// OpenApi
+	implementation 'org.springdoc:springdoc-openapi-ui:1.2.18'
+	implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.2.18'
+
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
