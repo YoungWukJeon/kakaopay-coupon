@@ -1,5 +1,3 @@
-
-
 CREATE TABLE IF NOT EXISTS user (
     no BIGINT PRIMARY KEY AUTO_INCREMENT,
     id VARCHAR(20) NOT NULL UNIQUE,
@@ -12,8 +10,12 @@ CREATE TABLE IF NOT EXISTS coupon (
     code VARCHAR(30) NOT NULL UNIQUE,
     created_date DATETIME NOT NULL,
     published_date DATETIME,
-    using_date DATETIME,
+    used_date DATETIME,
     expiration_date DATETIME,
     status VARCHAR(20) NOT NULL,
     user_no BIGINT
 );
+
+create index index_expiration_date on coupon(expiration_date);
+create index index_status on coupon(status);
+create index index_user_no on coupon(user_no);

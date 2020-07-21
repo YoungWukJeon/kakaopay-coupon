@@ -8,6 +8,6 @@ public class CouponNotFoundByStatusException extends RuntimeException {
     }
 
     public CouponNotFoundByStatusException(Status status) {
-        this("'" + status + "' 상태의 쿠폰이 없습니다.");
+        this("'" + status + "' 상태의 쿠폰이 아닙니다.");
     }
 }

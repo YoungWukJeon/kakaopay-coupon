@@ -10,7 +10,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "coupon", uniqueConstraints = {
-        @UniqueConstraint(name = "unique_code", columnNames = "code")
+        @UniqueConstraint(name = "unique_code", columnNames = "code"),
+}, indexes = {
+        @Index(name = "index_expiration_date", columnList = "expiration_date"),
+        @Index(name = "index_status", columnList = "status"),
+        @Index(name = "index_user_no", columnList = "user_no")
 })
 public class CouponEntity {
     @Id
@@ -27,8 +31,8 @@ public class CouponEntity {
     @Column(name = "published_date")
     private LocalDateTime publishedDate;
 
-    @Column(name = "using_date")
-    private LocalDateTime usingDate;
+    @Column(name = "used_date")
+    private LocalDateTime usedDate;
 
     @Column(name = "expiration_date")
     private LocalDateTime expirationDate;
@@ -41,7 +45,7 @@ public class CouponEntity {
     private Long userNo;
 
     public enum Status {
-        CREATED, PUBLISHED, USING, USED, EXPIRED
+        CREATED, PUBLISHED, USED, EXPIRED
     }
 
     @Builder
@@ -68,14 +72,14 @@ public class CouponEntity {
     }
 
     public CouponEntity useCoupon() {
-        this.status = Status.USING;
-        this.usingDate = LocalDateTime.now();
+        this.status = Status.USED;
+        this.usedDate = LocalDateTime.now();
         return this;
     }
 
     public CouponEntity cancelCoupon() {
         this.status = Status.PUBLISHED;
-        this.usingDate = null;
+        this.usedDate = null;
         return this;
     }
 

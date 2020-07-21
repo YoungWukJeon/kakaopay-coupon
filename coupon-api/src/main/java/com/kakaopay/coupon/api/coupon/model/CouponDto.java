@@ -26,7 +26,7 @@ public class CouponDto {
         return new CouponDto(
                 couponEntity.getNo(), couponEntity.getCode(),
                 couponEntity.getCreatedDate(), couponEntity.getPublishedDate(),
-                couponEntity.getUsingDate(), couponEntity.getExpirationDate(),
+                couponEntity.getUsedDate(), couponEntity.getExpirationDate(),
                 couponEntity.getStatus(), couponEntity.getUserNo());
     }
 }

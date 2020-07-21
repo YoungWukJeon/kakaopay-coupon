@@ -45,22 +45,6 @@ class CouponRepositoryTest {
     }
 
     @Test
-    void 코드와_status가_일치하는_쿠폰_조회() {
-        testEntityManager.persistAndFlush(savedCouponEntity);
-        CouponEntity couponEntity = couponRepository.findByCodeAndStatus("test-coupon", Status.CREATED).orElseThrow();
-        assertEquals(savedCouponEntity.getCode(), couponEntity.getCode());
-        assertEquals(savedCouponEntity.getStatus(), couponEntity.getStatus());
-    }
-
-    @Test
-    void 코드나_status가_일치하지_않는_쿠폰_조회() {
-        testEntityManager.persistAndFlush(savedCouponEntity);
-        assertThrows(RuntimeException.class, () -> {
-            couponRepository.findByCodeAndStatus("test-coupon", Status.PUBLISHED).orElseThrow();
-        });
-    }
-
-    @Test
     void 생성만_된_쿠폰_조회_성공() {
         testEntityManager.persistAndFlush(savedCouponEntity);
         CouponEntity couponEntity = couponRepository.findByStatus(Status.CREATED).orElseThrow();

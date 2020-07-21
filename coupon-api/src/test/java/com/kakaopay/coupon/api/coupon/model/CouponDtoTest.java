@@ -24,7 +24,7 @@ class CouponDtoTest {
         assertEquals(couponEntity.getCode(), couponDto.getCode());
         assertEquals(couponEntity.getCreatedDate(), couponDto.getCreatedDate());
         assertEquals(couponEntity.getPublishedDate(), couponDto.getPublishedDate());
-        assertEquals(couponEntity.getUsingDate(), couponDto.getUsingDate());
+        assertEquals(couponEntity.getUsedDate(), couponDto.getUsingDate());
         assertEquals(couponEntity.getExpirationDate(), couponDto.getExpirationDate());
         assertEquals(couponEntity.getStatus(), couponDto.getStatus());
         assertEquals(couponEntity.getUserNo(), couponDto.getUserNo());

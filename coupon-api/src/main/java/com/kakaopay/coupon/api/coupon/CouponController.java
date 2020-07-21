@@ -2,10 +2,12 @@ package com.kakaopay.coupon.api.coupon;
 
 import com.kakaopay.coupon.api.common.ApiService;
 import com.kakaopay.coupon.api.common.model.ApiResponse;
+import com.kakaopay.coupon.api.coupon.advice.exception.CouponStatusNotFoundException;
 import com.kakaopay.coupon.api.coupon.model.response.CouponCodeResponse;
 import com.kakaopay.coupon.api.coupon.service.CouponCreationService;
 import com.kakaopay.coupon.api.coupon.service.CouponService;
 import com.kakaopay.coupon.api.coupon.service.CouponUpdateService;
+import com.kakaopay.coupon.api.persistence.entity.CouponEntity.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,17 +62,31 @@ public class CouponController {
                 couponService.findAllByUserNo(userNo));
     }
 
-    @PutMapping(value = "/{code}/use")
-    public ApiResponse useCoupon(@PathVariable String code) {
-        return apiService.createSuccessResponse(
-                couponUpdateService.useCoupon(code));
+    @PutMapping(value = "/{code}/status/{status}")
+    public ApiResponse changeCouponStatus(@PathVariable String code, @PathVariable Status status) {
+        switch (status) {
+            case USED:
+                return apiService.createSuccessResponse(
+                        couponUpdateService.useCoupon(code));
+            case PUBLISHED:
+                return apiService.createSuccessResponse(
+                        couponUpdateService.cancelCoupon(code));
+            default:
+                throw new CouponStatusNotFoundException();
+        }
     }
 
-    @PutMapping(value = "/{code}/cancel")
-    public ApiResponse cancelCoupon(@PathVariable String code) {
-        return apiService.createSuccessResponse(
-                couponUpdateService.cancelCoupon(code));
-    }
+//    @PutMapping(value = "/{code}/use")
+//    public ApiResponse useCoupon(@PathVariable String code) {
+//        return apiService.createSuccessResponse(
+//                couponUpdateService.useCoupon(code));
+//    }
+//
+//    @PutMapping(value = "/{code}/cancel")
+//    public ApiResponse cancelCoupon(@PathVariable String code) {
+//        return apiService.createSuccessResponse(
+//                couponUpdateService.cancelCoupon(code));
+//    }
 
     @GetMapping(value = "/today/expiration")
     public ApiResponse getExpiredCouponsToday() {

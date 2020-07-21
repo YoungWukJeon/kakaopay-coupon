@@ -1,5 +1,6 @@
 package com.kakaopay.coupon.api.coupon.service;
 
+import com.kakaopay.coupon.api.coupon.advice.exception.CouponNotAvailableException;
 import com.kakaopay.coupon.api.coupon.advice.exception.CouponNotFoundByStatusException;
 import com.kakaopay.coupon.api.coupon.model.CouponDto;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -93,35 +95,76 @@ class CouponUpdateServiceTest {
         CouponEntity couponEntity =
                 CouponEntity.builder()
                         .code("test-code")
-                        .status(Status.PUBLISHED)
                         .build();
-        CouponEntity usingCouponEntity =
+        couponEntity.publishToUser(1L);
+        CouponEntity usedCouponEntity =
                 CouponEntity.builder()
                         .code("test-code")
-                        .status(Status.USING)
                         .build();
+        usedCouponEntity.publishToUser(1L);
+        usedCouponEntity.useCoupon();
 
-        given(couponRepository.findByCodeAndStatus(anyString(), any()))
+        given(couponRepository.findByCode(anyString()))
                 .willReturn(Optional.of(couponEntity));
         given(couponRepository.saveAndFlush(any()))
-                .willReturn(usingCouponEntity);
+                .willReturn(usedCouponEntity);
 
         // when
         CouponDto couponDto = couponUpdateService.useCoupon("test-code");
 
         // then
         assertEquals("test-code", couponDto.getCode());
-        assertEquals(Status.USING, couponDto.getStatus());
+        assertEquals(Status.USED, couponDto.getStatus());
+        assertEquals(1, couponDto.getExpirationDate().compareTo(LocalDateTime.now()));
     }
 
     @Test
     void 존재하지_않는_쿠폰으로_사용_실패() {
         // given
-        given(couponRepository.findByCodeAndStatus(anyString(), any()))
+        given(couponRepository.findByCode(anyString()))
                 .willReturn(Optional.empty());
 
         // then
-        assertThrows(CouponNotFoundByStatusException.class, () -> {
+        assertThrows(CouponNotAvailableException.class, () -> {
+            // when
+            couponUpdateService.useCoupon("test-code");
+        });
+    }
+
+    @Test
+    void status가_PUBLISHED가_아닌_쿠폰으로_사용_실패(){
+        // given
+        CouponEntity couponEntity =
+                CouponEntity.builder()
+                        .code("test-code")
+                        .status(Status.USED)
+                        .build();
+        given(couponRepository.findByCode(anyString()))
+                .willReturn(Optional.of(couponEntity));
+
+        // then
+        assertThrows(CouponNotAvailableException.class, () -> {
+            // when
+            couponUpdateService.useCoupon("test-code");
+        });
+    }
+
+    @Test
+    void 만료_기간이_지난_쿠폰으로_사용_실패() {
+        // given
+        CouponEntity couponEntity =
+                CouponEntity.builder()
+                        .code("test-code")
+                        .build();
+        couponEntity.publishToUser(1L);
+        // 만료 기간을 테스트하기 위해 임의로 만료일을 1일 전으로 수정
+        ReflectionTestUtils.setField(couponEntity, "expirationDate", LocalDateTime.now().minusYears(1L));
+
+        given(couponRepository.findByCode(anyString()))
+                .willReturn(Optional.of(couponEntity));
+
+        // then
+        assertThrows(CouponNotAvailableException.class, () -> {
             // when
             couponUpdateService.useCoupon("test-code");
         });
@@ -133,18 +176,18 @@ class CouponUpdateServiceTest {
         CouponEntity couponEntity =
                 CouponEntity.builder()
                         .code("test-code")
-                        .status(Status.USING)
+                        .status(Status.USED)
                         .build();
-        CouponEntity usingCouponEntity =
+        CouponEntity canceledCouponEntity =
                 CouponEntity.builder()
                         .code("test-code")
                         .status(Status.PUBLISHED)
                         .build();
 
-        given(couponRepository.findByCodeAndStatus(anyString(), any()))
+        given(couponRepository.findByCode(anyString()))
                 .willReturn(Optional.of(couponEntity));
         given(couponRepository.saveAndFlush(any()))
-                .willReturn(usingCouponEntity);
+                .willReturn(canceledCouponEntity);
 
         // when
         CouponDto couponDto = couponUpdateService.cancelCoupon("test-code");
@@ -155,10 +198,28 @@ class CouponUpdateServiceTest {
     }
 
     @Test
-    void 존재하지_않는_쿠폰이거나_status가_USING이_아니어서_취소_실패() {
+    void 존재하지_않는_쿠폰으로_취소_실패() {
         // given
-        given(couponRepository.findByCodeAndStatus(anyString(), any()))
+        given(couponRepository.findByCode(anyString()))
                 .willReturn(Optional.empty());
+
+        // then
+        assertThrows(CouponNotFoundByStatusException.class, () -> {
+            // when
+            couponUpdateService.cancelCoupon("test-code");
+        });
+    }
+
+    @Test
+    void status가_USED가_아닌_쿠폰으로_취소_실패() {
+        // given
+        CouponEntity couponEntity =
+                CouponEntity.builder()
+                        .code("test-code")
+                        .status(Status.PUBLISHED)
+                        .build();
+        given(couponRepository.findByCode(anyString()))
+                .willReturn(Optional.of(couponEntity));
 
         // then
         assertThrows(CouponNotFoundByStatusException.class, () -> {

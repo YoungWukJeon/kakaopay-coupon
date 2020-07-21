@@ -3,9 +3,7 @@ package com.kakaopay.coupon.api.coupon.advice;
 import com.kakaopay.coupon.api.common.ApiService;
 import com.kakaopay.coupon.api.common.model.ApiResponse;
 import com.kakaopay.coupon.api.common.model.ExceptionDto;
-import com.kakaopay.coupon.api.coupon.advice.exception.CouponCodeGenerationException;
-import com.kakaopay.coupon.api.coupon.advice.exception.CouponNotFoundByStatusException;
-import com.kakaopay.coupon.api.coupon.advice.exception.CouponNotFoundException;
+import com.kakaopay.coupon.api.coupon.advice.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,6 +26,18 @@ public class CouponExceptionAdvice {
     @ExceptionHandler(CouponNotFoundByStatusException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected ApiResponse couponNotFoundByStatus(HttpServletRequest request, CouponNotFoundByStatusException exception) {
+        return generateInternalServerError(request.getServletPath(), exception.getMessage());
+    }
+
+    @ExceptionHandler(CouponNotAvailableException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ApiResponse couponNotAvailable(HttpServletRequest request, CouponNotAvailableException exception) {
+        return generateInternalServerError(request.getServletPath(), exception.getMessage());
+    }
+
+    @ExceptionHandler(CouponStatusNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ApiResponse couponStatusNotFound(HttpServletRequest request, CouponStatusNotFoundException exception) {
         return generateInternalServerError(request.getServletPath(), exception.getMessage());
     }
 
