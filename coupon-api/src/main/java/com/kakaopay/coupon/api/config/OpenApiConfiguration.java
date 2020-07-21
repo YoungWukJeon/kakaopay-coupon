@@ -17,7 +17,7 @@ public class OpenApiConfiguration {
 
     private Info openApiInfo() {
         return new Info()
-                .title("ToyLog API Documentation")
-                .description("ToyLog API 개발에 사용되는 문서입니다.");
+                .title("Coupon API Documentation")
+                .description("Coupon API 개발에 사용되는 문서입니다.");
     }
 }
