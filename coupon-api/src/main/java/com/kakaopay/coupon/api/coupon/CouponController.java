@@ -36,17 +36,20 @@ public class CouponController {
 
     @GetMapping(value = "/creation")
     public ApiResponse createCoupon() {
-        return couponCreationService.save();
+        return apiService.createSuccessResponse(
+                couponCreationService.save());
     }
 
     @GetMapping(value = "/creation/count/{count}")
-    public ApiResponse createCoupons(@PathVariable Long count) {
-        return couponCreationService.saves(count);
+    public ApiResponse createCoupons(@PathVariable Integer count) {
+        return apiService.createSuccessResponse(
+                couponCreationService.saves(count));
     }
 
     @PutMapping(value = "/user/{userNo}")
     public ApiResponse publishToUser(@PathVariable Long userNo) {
-        return couponUpdateService.publishToUser(userNo);
+        return apiService.createSuccessResponse(
+                couponUpdateService.publishToUser(userNo));
     }
 
     @GetMapping(value = "/user/{userNo}")
@@ -57,12 +60,14 @@ public class CouponController {
 
     @PutMapping(value = "/{code}/use")
     public ApiResponse useCoupon(@PathVariable String code) {
-        return couponUpdateService.useCoupon(code);
+        return apiService.createSuccessResponse(
+                couponUpdateService.useCoupon(code));
     }
 
     @PutMapping(value = "/{code}/cancel")
     public ApiResponse cancelCoupon(@PathVariable String code) {
-        return couponUpdateService.cancelCoupon(code);
+        return apiService.createSuccessResponse(
+                couponUpdateService.cancelCoupon(code));
     }
 
     @GetMapping(value = "/today/expiration")

@@ -1,8 +1,6 @@
 package com.kakaopay.coupon.api.coupon.service;
 
-import com.kakaopay.coupon.api.common.ApiService;
-import com.kakaopay.coupon.api.common.model.ApiResponse;
-import com.kakaopay.coupon.api.coupon.service.CouponCreationService;
+import com.kakaopay.coupon.api.coupon.model.CouponDto;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
 import com.kakaopay.coupon.api.util.CodeGenerator;
@@ -16,7 +14,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.LongStream;
+import java.util.stream.IntStream;
 
 import static org.mockito.BDDMockito.*;
 
@@ -28,8 +26,6 @@ class CouponCreationServiceTest {
     private CouponCreationService couponCreationService;
     @Mock
     private CouponRepository couponRepository;
-    @Mock
-    private ApiService apiService;
     @Mock
     private CodeGenerator codeGenerator;
 
@@ -47,16 +43,12 @@ class CouponCreationServiceTest {
                 .willReturn(Optional.empty());
         given(couponRepository.saveAndFlush(any()))
                 .willReturn(couponEntity);
-        given(apiService.createSuccessResponse(any()))
-                .willReturn(ApiResponse.from(200, "성공", couponEntity));
 
         // when
-        ApiResponse apiResponse = couponCreationService.save();
+        CouponDto couponDto = couponCreationService.save();
 
         // then
-        assertEquals(200, apiResponse.getStatus());
-        assertEquals("성공", apiResponse.getMessage());
-        assertEquals(couponEntity.getCode(), ((CouponEntity) apiResponse.getData()).getCode());
+        assertEquals(couponEntity.getCode(), couponDto.getCode());
     }
 
     @Test
@@ -75,17 +67,17 @@ class CouponCreationServiceTest {
         // then
         assertThrows(RuntimeException.class, () -> {
             // when
-            ApiResponse apiResponse = couponCreationService.save();
+            couponCreationService.save();
         });
     }
 
     @Test
     void 다수_저장_성공() {
         // given
-        long count = 5L;
+        int count = 5;
 
         List<CouponEntity> couponEntities =
-                LongStream.range(0, count)
+                IntStream.range(0, count)
                         .mapToObj(i ->
                                 CouponEntity.builder()
                                         .code("test-code" + i)
@@ -98,16 +90,20 @@ class CouponCreationServiceTest {
                 .willReturn(Optional.empty());
         given(couponRepository.saveAll(anyCollection()))
                 .willReturn(couponEntities);
-        given(apiService.createSuccessResponse(anyCollection()))
-                .willReturn(ApiResponse.from(200, "성공", couponEntities));
 
         // when
-        ApiResponse apiResponse = couponCreationService.saves(count);
+        List<CouponDto> couponDtos = couponCreationService.saves(count);
 
         // then
-        assertEquals(200, apiResponse.getStatus());
-        assertEquals("성공", apiResponse.getMessage());
-        assertIterableEquals(couponEntities, ((List<CouponEntity>) apiResponse.getData()));
+        assertEquals(couponEntities.size(), couponDtos.size());
+        IntStream.range(0, couponEntities.size())
+                .forEach(i -> {
+                    CouponEntity couponEntity = couponEntities.get(i);
+                    CouponDto couponDto = couponDtos.get(i);
+                    assertEquals(couponEntity.getNo(), couponDto.getNo());
+                    assertEquals(couponEntity.getCode(), couponDto.getCode());
+                    assertEquals(couponEntity.getStatus(), couponDto.getStatus());
+                });
     }
 
     @Test

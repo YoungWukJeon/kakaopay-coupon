@@ -1,7 +1,6 @@
 package com.kakaopay.coupon.api.coupon.service;
 
-import com.kakaopay.coupon.api.common.ApiService;
-import com.kakaopay.coupon.api.common.model.ApiResponse;
+import com.kakaopay.coupon.api.coupon.model.CouponDto;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity.Status;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
@@ -28,8 +27,6 @@ class CouponUpdateServiceTest {
     private CouponRepository couponRepository;
     @Mock
     private UserService userService;
-    @Mock
-    private ApiService apiService;
 
     @Test
     void 시간_차이_구하기() {
@@ -56,21 +53,19 @@ class CouponUpdateServiceTest {
                 .willReturn(Optional.of(couponEntity));
         given(couponRepository.saveAndFlush(any()))
                 .willReturn(couponEntity);
-        given(apiService.createSuccessResponse(any()))
-                .willReturn(ApiResponse.from(200, "성공", couponEntity));
 
         // when
-        ApiResponse apiResponse = couponUpdateService.publishToUser(userNo);
-        CouponEntity responseCouponEntity = (CouponEntity) apiResponse.getData();
+        CouponDto couponDto = couponUpdateService.publishToUser(userNo);
+        System.out.println(couponDto);
 
         // then
-        assertEquals(Status.PUBLISHED, responseCouponEntity.getStatus());
-        assertNotNull(responseCouponEntity.getPublishedDate());
-        assertNotNull(responseCouponEntity.getExpirationDate());
+        assertNotNull(couponDto.getPublishedDate());
+        assertNotNull(couponDto.getExpirationDate());
         assertEquals(1,
                 ChronoUnit.HOURS.between(
-                        responseCouponEntity.getPublishedDate(), responseCouponEntity.getExpirationDate()));
-        assertEquals(userNo, ((CouponEntity) apiResponse.getData()).getUserNo());
+                        couponDto.getPublishedDate(), couponDto.getExpirationDate()));
+        assertEquals(Status.PUBLISHED, couponDto.getStatus());
+        assertEquals(userNo, couponDto.getUserNo());
     }
 
     @Test
@@ -87,7 +82,7 @@ class CouponUpdateServiceTest {
         // then
         assertThrows(RuntimeException.class, () -> {
             // when
-            ApiResponse apiResponse = couponUpdateService.publishToUser(userNo);
+            couponUpdateService.publishToUser(userNo);
         });
     }
 
@@ -109,16 +104,13 @@ class CouponUpdateServiceTest {
                 .willReturn(Optional.of(couponEntity));
         given(couponRepository.saveAndFlush(any()))
                 .willReturn(usingCouponEntity);
-        given(apiService.createSuccessResponse(any()))
-                .willReturn(ApiResponse.from(200, "성공", usingCouponEntity));
 
         // when
-        ApiResponse apiResponse = couponUpdateService.useCoupon("test-code");
-        CouponEntity responseCouponEntity = (CouponEntity) apiResponse.getData();
+        CouponDto couponDto = couponUpdateService.useCoupon("test-code");
 
         // then
-        assertEquals(Status.USING, responseCouponEntity.getStatus());
-        assertEquals("test-code", ((CouponEntity) apiResponse.getData()).getCode());
+        assertEquals("test-code", couponDto.getCode());
+        assertEquals(Status.USING, couponDto.getStatus());
     }
 
     @Test
@@ -130,7 +122,7 @@ class CouponUpdateServiceTest {
         // then
         assertThrows(RuntimeException.class, () -> {
             // when
-            ApiResponse apiResponse = couponUpdateService.useCoupon("test-code");
+            couponUpdateService.useCoupon("test-code");
         });
     }
 
@@ -152,16 +144,13 @@ class CouponUpdateServiceTest {
                 .willReturn(Optional.of(couponEntity));
         given(couponRepository.saveAndFlush(any()))
                 .willReturn(usingCouponEntity);
-        given(apiService.createSuccessResponse(any()))
-                .willReturn(ApiResponse.from(200, "성공", usingCouponEntity));
 
         // when
-        ApiResponse apiResponse = couponUpdateService.cancelCoupon("test-code");
-        CouponEntity responseCouponEntity = (CouponEntity) apiResponse.getData();
+        CouponDto couponDto = couponUpdateService.cancelCoupon("test-code");
 
         // then
-        assertEquals(Status.PUBLISHED, responseCouponEntity.getStatus());
-        assertEquals("test-code", ((CouponEntity) apiResponse.getData()).getCode());
+        assertEquals("test-code", couponDto.getCode());
+        assertEquals(Status.PUBLISHED, couponDto.getStatus());
     }
 
     @Test
@@ -173,7 +162,7 @@ class CouponUpdateServiceTest {
         // then
         assertThrows(RuntimeException.class, () -> {
             // when
-            ApiResponse apiResponse = couponUpdateService.cancelCoupon("test-code");
+            couponUpdateService.cancelCoupon("test-code");
         });
     }
 }

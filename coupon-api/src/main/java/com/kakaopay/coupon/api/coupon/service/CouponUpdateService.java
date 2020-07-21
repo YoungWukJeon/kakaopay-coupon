@@ -1,9 +1,6 @@
 package com.kakaopay.coupon.api.coupon.service;
 
-import com.kakaopay.coupon.api.common.ApiService;
-import com.kakaopay.coupon.api.common.model.ApiResponse;
 import com.kakaopay.coupon.api.coupon.model.CouponDto;
-import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity.Status;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
 import com.kakaopay.coupon.api.user.UserService;
@@ -18,48 +15,35 @@ public class CouponUpdateService {
     private CouponRepository couponRepository;
     @Autowired
     private UserService userService;
-    @Autowired
-    private ApiService apiService;
 
     // TODO: 2020-07-20 예외 처리
     @Transactional
-    public ApiResponse publishToUser(Long userNo) {
+    public CouponDto publishToUser(Long userNo) {
         userService.checkExistsById(userNo);
-        CouponEntity couponEntity =
+        return CouponDto.from(
                 couponRepository.saveAndFlush(
                         couponRepository.findTop1ByStatus(Status.CREATED)
                                 .orElseThrow()
-                                .publishToUser(userNo));
-
-        return apiService.createSuccessResponse(
-                convertCouponEntityToCouponResponse(couponEntity));
+                                .publishToUser(userNo)));
     }
 
     // TODO: 2020-07-20 예외 처리
     @Transactional
-    public ApiResponse useCoupon(String code) {
-        CouponEntity couponEntity = couponRepository.saveAndFlush(
-                couponRepository.findByCodeAndStatus(code, Status.PUBLISHED)
-                        .orElseThrow()
-                        .useCoupon());
-
-        return apiService.createSuccessResponse(
-                convertCouponEntityToCouponResponse(couponEntity));
+    public CouponDto useCoupon(String code) {
+        return CouponDto.from(
+                couponRepository.saveAndFlush(
+                        couponRepository.findByCodeAndStatus(code, Status.PUBLISHED)
+                                .orElseThrow()
+                                .useCoupon()));
     }
 
     // TODO: 2020-07-21 예외 처리
     @Transactional
-    public ApiResponse cancelCoupon(String code) {
-        CouponEntity couponEntity = couponRepository.saveAndFlush(
-                couponRepository.findByCodeAndStatus(code, Status.USING)
-                        .orElseThrow()
-                        .cancelCoupon());
-
-        return apiService.createSuccessResponse(
-                convertCouponEntityToCouponResponse(couponEntity));
-    }
-
-    private CouponDto convertCouponEntityToCouponResponse(CouponEntity couponEntity) {
-        return CouponDto.from(couponEntity);
+    public CouponDto cancelCoupon(String code) {
+        return CouponDto.from(
+                couponRepository.saveAndFlush(
+                        couponRepository.findByCodeAndStatus(code, Status.USING)
+                                .orElseThrow()
+                                .cancelCoupon()));
     }
 }
