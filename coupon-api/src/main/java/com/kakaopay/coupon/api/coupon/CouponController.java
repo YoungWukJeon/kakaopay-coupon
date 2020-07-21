@@ -2,6 +2,7 @@ package com.kakaopay.coupon.api.coupon;
 
 import com.kakaopay.coupon.api.common.ApiService;
 import com.kakaopay.coupon.api.common.model.ApiResponse;
+import com.kakaopay.coupon.api.coupon.model.response.CouponCodeResponse;
 import com.kakaopay.coupon.api.coupon.service.CouponCreationService;
 import com.kakaopay.coupon.api.coupon.service.CouponService;
 import com.kakaopay.coupon.api.coupon.service.CouponUpdateService;
@@ -49,7 +50,8 @@ public class CouponController {
     @PutMapping(value = "/user/{userNo}")
     public ApiResponse publishToUser(@PathVariable Long userNo) {
         return apiService.createSuccessResponse(
-                couponUpdateService.publishToUser(userNo));
+                CouponCodeResponse.from(
+                    couponUpdateService.publishToUser(userNo)));
     }
 
     @GetMapping(value = "/user/{userNo}")
