@@ -1,7 +1,7 @@
-package com.kakaopay.coupon.api.user;
+package com.kakaopay.coupon.api.user.service;
 
 import com.kakaopay.coupon.api.persistence.repository.UserRepository;
-import com.kakaopay.coupon.api.user.exception.UserNotFoundException;
+import com.kakaopay.coupon.api.user.advice.exception.UserNotFoundException;
 import com.kakaopay.coupon.api.user.model.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

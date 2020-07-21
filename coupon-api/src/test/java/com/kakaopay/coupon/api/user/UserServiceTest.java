@@ -2,8 +2,9 @@ package com.kakaopay.coupon.api.user;
 
 import com.kakaopay.coupon.api.persistence.entity.UserEntity;
 import com.kakaopay.coupon.api.persistence.repository.UserRepository;
-import com.kakaopay.coupon.api.user.exception.UserNotFoundException;
+import com.kakaopay.coupon.api.user.advice.exception.UserNotFoundException;
 import com.kakaopay.coupon.api.user.model.UserDto;
+import com.kakaopay.coupon.api.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

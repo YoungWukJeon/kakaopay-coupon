@@ -1,11 +1,11 @@
 package com.kakaopay.coupon.api.coupon.service;
 
-import com.kakaopay.coupon.api.coupon.exception.CouponNotFoundByStatusException;
+import com.kakaopay.coupon.api.coupon.advice.exception.CouponNotFoundByStatusException;
 import com.kakaopay.coupon.api.coupon.model.CouponDto;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity.Status;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
-import com.kakaopay.coupon.api.user.UserService;
+import com.kakaopay.coupon.api.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

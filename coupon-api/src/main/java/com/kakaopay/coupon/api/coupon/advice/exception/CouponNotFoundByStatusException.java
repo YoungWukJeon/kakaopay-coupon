@@ -1,4 +1,4 @@
-package com.kakaopay.coupon.api.coupon.exception;
+package com.kakaopay.coupon.api.coupon.advice.exception;
 
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity.Status;
 

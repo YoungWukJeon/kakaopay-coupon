@@ -1,4 +1,4 @@
-package com.kakaopay.coupon.api.coupon.exception;
+package com.kakaopay.coupon.api.coupon.advice.exception;
 
 public class CouponNotFoundException extends RuntimeException {
     public CouponNotFoundException(String msg) {

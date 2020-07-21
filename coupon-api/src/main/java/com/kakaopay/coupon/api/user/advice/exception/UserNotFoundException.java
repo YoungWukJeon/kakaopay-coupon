@@ -1,4 +1,4 @@
-package com.kakaopay.coupon.api.user.exception;
+package com.kakaopay.coupon.api.user.advice.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String msg) {

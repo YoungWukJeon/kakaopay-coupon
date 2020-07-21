@@ -1,4 +1,4 @@
-package com.kakaopay.coupon.api.coupon.exception;
+package com.kakaopay.coupon.api.coupon.advice.exception;
 
 public class CouponCodeGenerationException extends RuntimeException {
     public CouponCodeGenerationException(String msg) {
@@ -6,6 +6,6 @@ public class CouponCodeGenerationException extends RuntimeException {
     }
 
     public CouponCodeGenerationException() {
-        super("쿠폰 코드 생성에 실패했습니다.");
+        this("쿠폰 코드 생성에 실패했습니다.");
     }
 }
