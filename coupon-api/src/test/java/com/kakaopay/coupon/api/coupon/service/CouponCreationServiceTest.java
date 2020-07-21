@@ -1,5 +1,6 @@
 package com.kakaopay.coupon.api.coupon.service;
 
+import com.kakaopay.coupon.api.coupon.exception.CouponCodeGenerationException;
 import com.kakaopay.coupon.api.coupon.model.CouponDto;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
@@ -65,7 +66,7 @@ class CouponCreationServiceTest {
                 .willReturn(Optional.ofNullable(couponEntity));
 
         // then
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(CouponCodeGenerationException.class, () -> {
             // when
             couponCreationService.save();
         });

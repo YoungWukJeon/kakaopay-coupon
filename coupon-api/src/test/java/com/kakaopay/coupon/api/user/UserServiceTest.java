@@ -2,6 +2,7 @@ package com.kakaopay.coupon.api.user;
 
 import com.kakaopay.coupon.api.persistence.entity.UserEntity;
 import com.kakaopay.coupon.api.persistence.repository.UserRepository;
+import com.kakaopay.coupon.api.user.exception.UserNotFoundException;
 import com.kakaopay.coupon.api.user.model.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +50,7 @@ class UserServiceTest {
                 .willReturn(Optional.empty());
 
         // then
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(UserNotFoundException.class, () -> {
             // when
             userService.findByNo(no);
         });
@@ -77,7 +78,7 @@ class UserServiceTest {
                 .willReturn(false);
 
         // then
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(UserNotFoundException.class, () -> {
             // when
             userService.checkExistsById(anyLong());
         });

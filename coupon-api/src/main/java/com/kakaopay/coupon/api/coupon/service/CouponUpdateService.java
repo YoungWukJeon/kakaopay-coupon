@@ -1,5 +1,6 @@
 package com.kakaopay.coupon.api.coupon.service;
 
+import com.kakaopay.coupon.api.coupon.exception.CouponNotFoundByStatusException;
 import com.kakaopay.coupon.api.coupon.model.CouponDto;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity.Status;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
@@ -16,34 +17,31 @@ public class CouponUpdateService {
     @Autowired
     private UserService userService;
 
-    // TODO: 2020-07-20 예외 처리
     @Transactional
     public CouponDto publishToUser(Long userNo) {
         userService.checkExistsById(userNo);
         return CouponDto.from(
                 couponRepository.saveAndFlush(
                         couponRepository.findTop1ByStatus(Status.CREATED)
-                                .orElseThrow()
+                                .orElseThrow(() -> new CouponNotFoundByStatusException(Status.CREATED))
                                 .publishToUser(userNo)));
     }
 
-    // TODO: 2020-07-20 예외 처리
     @Transactional
     public CouponDto useCoupon(String code) {
         return CouponDto.from(
                 couponRepository.saveAndFlush(
                         couponRepository.findByCodeAndStatus(code, Status.PUBLISHED)
-                                .orElseThrow()
+                                .orElseThrow(() -> new CouponNotFoundByStatusException(Status.PUBLISHED))
                                 .useCoupon()));
     }
 
-    // TODO: 2020-07-21 예외 처리
     @Transactional
     public CouponDto cancelCoupon(String code) {
         return CouponDto.from(
                 couponRepository.saveAndFlush(
                         couponRepository.findByCodeAndStatus(code, Status.USING)
-                                .orElseThrow()
+                                .orElseThrow(() -> new CouponNotFoundByStatusException(Status.USING))
                                 .cancelCoupon()));
     }
 }

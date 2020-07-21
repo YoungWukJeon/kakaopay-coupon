@@ -1,5 +1,6 @@
 package com.kakaopay.coupon.api.coupon.service;
 
+import com.kakaopay.coupon.api.coupon.exception.CouponNotFoundByStatusException;
 import com.kakaopay.coupon.api.coupon.model.CouponDto;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity.Status;
@@ -80,7 +81,7 @@ class CouponUpdateServiceTest {
                 .willReturn(Optional.empty());
 
         // then
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(CouponNotFoundByStatusException.class, () -> {
             // when
             couponUpdateService.publishToUser(userNo);
         });
@@ -120,7 +121,7 @@ class CouponUpdateServiceTest {
                 .willReturn(Optional.empty());
 
         // then
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(CouponNotFoundByStatusException.class, () -> {
             // when
             couponUpdateService.useCoupon("test-code");
         });
@@ -160,7 +161,7 @@ class CouponUpdateServiceTest {
                 .willReturn(Optional.empty());
 
         // then
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(CouponNotFoundByStatusException.class, () -> {
             // when
             couponUpdateService.cancelCoupon("test-code");
         });

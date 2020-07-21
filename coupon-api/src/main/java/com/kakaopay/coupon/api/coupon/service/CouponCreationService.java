@@ -1,5 +1,6 @@
 package com.kakaopay.coupon.api.coupon.service;
 
+import com.kakaopay.coupon.api.coupon.exception.CouponCodeGenerationException;
 import com.kakaopay.coupon.api.coupon.model.CouponDto;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
@@ -27,7 +28,7 @@ public class CouponCreationService {
         return CouponDto.from(
                 couponRepository.saveAndFlush(
                         CouponEntity.builder()
-                                .code(generateCode().orElseThrow())
+                                .code(generateCode().orElseThrow(CouponCodeGenerationException::new))
                                 .build()));
     }
 
@@ -35,7 +36,7 @@ public class CouponCreationService {
     public List<CouponDto> saves(Integer count) {
         List<CouponEntity> couponEntities =
                 IntStream.range(0, count)
-                        .mapToObj(i -> generateCode().orElseThrow())
+                        .mapToObj(i -> generateCode().orElseThrow(CouponCodeGenerationException::new))
                         .map(s ->
                                 CouponEntity.builder()
                                         .code(s)

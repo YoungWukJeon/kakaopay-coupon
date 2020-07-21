@@ -22,7 +22,6 @@ public class CouponDto {
     private final Status status;
     private final Long userNo;
 
-    // TODO: 2020-07-21 테스트 코드
     public static CouponDto from(CouponEntity couponEntity) {
         return new CouponDto(
                 couponEntity.getNo(), couponEntity.getCode(),

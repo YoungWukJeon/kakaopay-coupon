@@ -1,5 +1,6 @@
 package com.kakaopay.coupon.api.coupon.service;
 
+import com.kakaopay.coupon.api.coupon.exception.CouponNotFoundException;
 import com.kakaopay.coupon.api.coupon.model.CouponDto;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
@@ -65,7 +66,7 @@ class CouponServiceTest {
                 .willReturn(Optional.empty());
 
         // then
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(CouponNotFoundException.class, () -> {
             // when
             couponService.findByCode(code);
         });

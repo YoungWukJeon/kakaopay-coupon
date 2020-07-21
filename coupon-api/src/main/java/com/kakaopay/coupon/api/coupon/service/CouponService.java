@@ -1,5 +1,6 @@
 package com.kakaopay.coupon.api.coupon.service;
 
+import com.kakaopay.coupon.api.coupon.exception.CouponNotFoundException;
 import com.kakaopay.coupon.api.coupon.model.CouponDto;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
@@ -22,11 +23,10 @@ public class CouponService {
                 .collect(Collectors.toList());
     }
 
-    // TODO: 2020-07-18 예외 처리
     public CouponDto findByCode(String code) {
         return CouponDto.from(
                 couponRepository.findByCode(code)
-                        .orElseThrow());
+                        .orElseThrow(CouponNotFoundException::new));
     }
 
     public List<CouponDto> findAllByUserNo(Long userNo) {
