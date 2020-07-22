@@ -1,0 +1,18 @@
+spring:
+    datasource:
+        platform: mysql
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3307/coupon_system?serverTimezone=UTC&characterEncoding=UTF-8
+        username: couponadmin
+        password: couponpass
+        sql-script-encoding: UTF-8
+
+    jpa:
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+
+server:
+    tomcat:
+        uri-encoding: utf-8
