@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+}
+
+group 'com.kakaopay'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // MySQL
+    runtimeOnly 'mysql:mysql-connector-java'
+
+    // 5.6.2
+    testImplementation('org.junit.jupiter:junit-jupiter-engine') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+//    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+test {
+    useJUnitPlatform()
+}
