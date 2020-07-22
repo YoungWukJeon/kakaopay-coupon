@@ -1,5 +1,5 @@
 rootProject.name = 'kakaopay-coupon'
 include 'coupon-api'
 include 'coupon-expiration-load'
-
+include 'coupon-expiration-notification-load'
 
