@@ -10,14 +10,19 @@ repositories {
 }
 
 dependencies {
-    // MySQL
-    runtimeOnly 'mysql:mysql-connector-java'
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-    // 5.6.2
-    testImplementation('org.junit.jupiter:junit-jupiter-engine') {
+    // MySQL
+    runtimeOnly 'mysql:mysql-connector-java:8.0.20'
+
+    testCompile 'org.mockito:mockito-core:3.3.3'
+    testCompile 'org.mockito:mockito-junit-jupiter:3.3.3'
+
+    testImplementation('org.junit.jupiter:junit-jupiter-engine:5.6.2') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-//    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 test {
