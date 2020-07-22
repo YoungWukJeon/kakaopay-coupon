@@ -21,21 +21,12 @@ public class DataSource {
         return connection;
     }
 
-    public void connect() {
-        try {
-            connection = DriverManager.getConnection(url, username, password);
-        } catch (SQLException exception) {
-            System.out.println("Database Connection Fail.");
-            exception.printStackTrace();
-        }
+    public void connect() throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        connection = DriverManager.getConnection(url, username, password);
     }
 
-    public void disconnect() {
-        try {
-            connection.close();
-        } catch (SQLException exception) {
-            System.out.println("Database Disconnection Fail.");
-            exception.printStackTrace();
-        }
+    public void disconnect() throws SQLException {
+        connection.close();
     }
 }
