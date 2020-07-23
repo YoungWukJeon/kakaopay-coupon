@@ -1,10 +1,3 @@
-CREATE TABLE IF NOT EXISTS user (
-    no BIGINT PRIMARY KEY AUTO_INCREMENT,
-    id VARCHAR(20) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    salt VARCHAR(40) NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS coupon (
     no BIGINT PRIMARY KEY AUTO_INCREMENT,
     code VARCHAR(30) NOT NULL UNIQUE,
@@ -16,6 +9,18 @@ CREATE TABLE IF NOT EXISTS coupon (
     user_no BIGINT
 );
 
-create index index_expiration_date on coupon(expiration_date);
-create index index_status on coupon(status);
-create index index_user_no on coupon(user_no);
+CREATE INDEX index_expiration_date ON coupon (expiration_date);
+CREATE INDEX index_status ON coupon(status);
+CREATE INDEX index_user_no ON coupon(user_no);
+
+CREATE TABLE IF NOT EXISTS user (
+    no BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id VARCHAR(20) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_entity_roles (
+    user_entity_no BIGINT NOT NULL,
+    roles VARCHAR(255),
+    FOREIGN KEY (user_entity_no) REFERENCES user (no)
+);

@@ -65,7 +65,7 @@ public class CouponEntity {
     public CouponEntity publishToUser(Long userNo) {
         LocalDateTime now = LocalDateTime.now();
         this.publishedDate = now;
-        this.expirationDate = now.plusHours(1L);
+        this.expirationDate = now.plusDays(3L);
         this.status = Status.PUBLISHED;
         this.userNo = userNo;
         return this;

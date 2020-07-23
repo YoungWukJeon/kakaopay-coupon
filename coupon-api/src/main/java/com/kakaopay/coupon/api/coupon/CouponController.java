@@ -9,6 +9,7 @@ import com.kakaopay.coupon.api.coupon.service.CouponService;
 import com.kakaopay.coupon.api.coupon.service.CouponUpdateService;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -64,29 +65,18 @@ public class CouponController {
 
     @PutMapping(value = "/{code}/status/{status}")
     public ApiResponse changeCouponStatus(@PathVariable String code, @PathVariable Status status) {
+        Long userNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
         switch (status) {
             case USED:
                 return apiService.createSuccessResponse(
-                        couponUpdateService.useCoupon(code));
+                        couponUpdateService.useCoupon(code, userNo));
             case PUBLISHED:
                 return apiService.createSuccessResponse(
-                        couponUpdateService.cancelCoupon(code));
+                        couponUpdateService.cancelCoupon(code, userNo));
             default:
                 throw new CouponStatusNotFoundException();
         }
     }
-
-//    @PutMapping(value = "/{code}/use")
-//    public ApiResponse useCoupon(@PathVariable String code) {
-//        return apiService.createSuccessResponse(
-//                couponUpdateService.useCoupon(code));
-//    }
-//
-//    @PutMapping(value = "/{code}/cancel")
-//    public ApiResponse cancelCoupon(@PathVariable String code) {
-//        return apiService.createSuccessResponse(
-//                couponUpdateService.cancelCoupon(code));
-//    }
 
     @GetMapping(value = "/today/expiration")
     public ApiResponse getExpiredCouponsToday() {

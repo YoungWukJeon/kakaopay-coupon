@@ -17,11 +17,21 @@ public class UserService {
                         .orElseThrow(UserNotFoundException::new));
     }
 
+    public UserDto findById(String id) {
+        return UserDto.from(
+                userRepository.findById(id)
+                        .orElseThrow(UserNotFoundException::new));
+    }
+
     // TODO: 2020-07-20 여기 로직 변경하는게 나을듯
-    public void checkExistsById(Long no) {
-        if (userRepository.existsById(no)) {
+    public void checkExistsByNo(Long no) {
+        if (userRepository.existsByNo(no)) {
             return;
         }
         throw new UserNotFoundException();
+    }
+
+    public boolean checkExistsById(String id) {
+        return userRepository.existsById(id);
     }
 }

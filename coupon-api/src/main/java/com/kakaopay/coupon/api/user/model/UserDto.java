@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -13,9 +15,9 @@ public class UserDto {
     private final Long no;
     private final String id;
     private final String password;
-    private final String salt;
+    private final List<String> roles;
 
     public static UserDto from(UserEntity userEntity) {
-        return new UserDto(userEntity.getNo(), userEntity.getId(), userEntity.getPassword(), userEntity.getSalt());
+        return new UserDto(userEntity.getNo(), userEntity.getId(), userEntity.getPassword(),  userEntity.getRoles());
     }
 }

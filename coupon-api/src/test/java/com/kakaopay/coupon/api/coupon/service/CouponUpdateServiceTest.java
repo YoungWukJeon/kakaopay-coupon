@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -51,21 +52,22 @@ class CouponUpdateServiceTest {
 
         willDoNothing()
                 .given(userService)
-                .checkExistsById(userNo);
+                .checkExistsByNo(userNo);
         given(couponRepository.findTop1ByStatus(status))
                 .willReturn(Optional.of(couponEntity));
         given(couponRepository.saveAndFlush(any()))
                 .willReturn(couponEntity);
 
+        int duration = 3;
+
         // when
         CouponDto couponDto = couponUpdateService.publishToUser(userNo);
-        System.out.println(couponDto);
 
         // then
         assertNotNull(couponDto.getPublishedDate());
         assertNotNull(couponDto.getExpirationDate());
-        assertEquals(1,
-                ChronoUnit.HOURS.between(
+        assertEquals(duration,
+                ChronoUnit.DAYS.between(
                         couponDto.getPublishedDate(), couponDto.getExpirationDate()));
         assertEquals(Status.PUBLISHED, couponDto.getStatus());
         assertEquals(userNo, couponDto.getUserNo());
@@ -78,7 +80,7 @@ class CouponUpdateServiceTest {
         Status status = Status.CREATED;
         willDoNothing()
                 .given(userService)
-                .checkExistsById(userNo);
+                .checkExistsByNo(userNo);
         given(couponRepository.findTop1ByStatus(status))
                 .willReturn(Optional.empty());
 
@@ -109,13 +111,15 @@ class CouponUpdateServiceTest {
         given(couponRepository.saveAndFlush(any()))
                 .willReturn(usedCouponEntity);
 
+        int duration = 3;
+
         // when
-        CouponDto couponDto = couponUpdateService.useCoupon("test-code");
+        CouponDto couponDto = couponUpdateService.useCoupon("test-code", 1L);
 
         // then
         assertEquals("test-code", couponDto.getCode());
         assertEquals(Status.USED, couponDto.getStatus());
-        assertEquals(1, couponDto.getExpirationDate().compareTo(LocalDateTime.now()));
+        assertEquals(duration, couponDto.getExpirationDate().compareTo(LocalDateTime.now()));
     }
 
     @Test
@@ -127,7 +131,7 @@ class CouponUpdateServiceTest {
         // then
         assertThrows(CouponNotAvailableException.class, () -> {
             // when
-            couponUpdateService.useCoupon("test-code");
+            couponUpdateService.useCoupon("test-code", 1L);
         });
     }
 
@@ -145,7 +149,7 @@ class CouponUpdateServiceTest {
         // then
         assertThrows(CouponNotAvailableException.class, () -> {
             // when
-            couponUpdateService.useCoupon("test-code");
+            couponUpdateService.useCoupon("test-code", 1L);
         });
     }
 
@@ -166,7 +170,26 @@ class CouponUpdateServiceTest {
         // then
         assertThrows(CouponNotAvailableException.class, () -> {
             // when
-            couponUpdateService.useCoupon("test-code");
+            couponUpdateService.useCoupon("test-code", 1L);
+        });
+    }
+
+    @Test
+    void 사용자가_달라서_쿠폰_사용_실패() {
+        // given
+        CouponEntity couponEntity =
+                CouponEntity.builder()
+                        .code("test-code")
+                        .build();
+        couponEntity.publishToUser(1L);
+
+        given(couponRepository.findByCode(anyString()))
+                .willReturn(Optional.of(couponEntity));
+
+        // then
+        assertThrows(CouponNotAvailableException.class, () -> {
+            // when
+            couponUpdateService.useCoupon("test-code", 2L);
         });
     }
 
@@ -175,14 +198,18 @@ class CouponUpdateServiceTest {
         // given
         CouponEntity couponEntity =
                 CouponEntity.builder()
+                        .no(1L)
                         .code("test-code")
                         .status(Status.USED)
                         .build();
+        ReflectionTestUtils.setField(couponEntity, "userNo", 1L);
         CouponEntity canceledCouponEntity =
                 CouponEntity.builder()
+                        .no(1L)
                         .code("test-code")
                         .status(Status.PUBLISHED)
                         .build();
+        ReflectionTestUtils.setField(canceledCouponEntity, "userNo", 1L);
 
         given(couponRepository.findByCode(anyString()))
                 .willReturn(Optional.of(couponEntity));
@@ -190,7 +217,7 @@ class CouponUpdateServiceTest {
                 .willReturn(canceledCouponEntity);
 
         // when
-        CouponDto couponDto = couponUpdateService.cancelCoupon("test-code");
+        CouponDto couponDto = couponUpdateService.cancelCoupon("test-code", 1L);
 
         // then
         assertEquals("test-code", couponDto.getCode());
@@ -206,7 +233,7 @@ class CouponUpdateServiceTest {
         // then
         assertThrows(CouponNotFoundByStatusException.class, () -> {
             // when
-            couponUpdateService.cancelCoupon("test-code");
+            couponUpdateService.cancelCoupon("test-code", 1L);
         });
     }
 
@@ -224,7 +251,25 @@ class CouponUpdateServiceTest {
         // then
         assertThrows(CouponNotFoundByStatusException.class, () -> {
             // when
-            couponUpdateService.cancelCoupon("test-code");
+            couponUpdateService.cancelCoupon("test-code", 1L);
+        });
+    }
+
+    @Test
+    void 사용자가_달라서_쿠폰_취소_실패() {
+        // given
+        CouponEntity couponEntity =
+                CouponEntity.builder()
+                        .no(1L)
+                        .code("test-code")
+                        .build();
+        given(couponRepository.findByCode(anyString()))
+                .willReturn(Optional.of(couponEntity));
+
+        // then
+        assertThrows(CouponNotFoundByStatusException.class, () -> {
+            // when
+            couponUpdateService.cancelCoupon("test-code", 2L);
         });
     }
 }
