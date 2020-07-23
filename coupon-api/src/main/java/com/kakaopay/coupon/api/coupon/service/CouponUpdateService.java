@@ -7,6 +7,7 @@ import com.kakaopay.coupon.api.persistence.entity.CouponEntity.Status;
 import com.kakaopay.coupon.api.persistence.repository.CouponRepository;
 import com.kakaopay.coupon.api.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -30,22 +31,24 @@ public class CouponUpdateService {
     }
 
     @Transactional
-    public CouponDto useCoupon(String code) {
+    public CouponDto useCoupon(String code, Long userNo) {
         return CouponDto.from(
                 couponRepository.saveAndFlush(
                     couponRepository.findByCode(code)
                             .filter(e -> e.getStatus() == Status.PUBLISHED)
                             .filter(e -> e.getExpirationDate().compareTo(LocalDateTime.now()) > 0)
+                            .filter(e -> e.getUserNo().equals(userNo))
                             .orElseThrow(CouponNotAvailableException::new)
                             .useCoupon()));
     }
 
     @Transactional
-    public CouponDto cancelCoupon(String code) {
+    public CouponDto cancelCoupon(String code, Long userNo) {
         return CouponDto.from(
                 couponRepository.saveAndFlush(
                         couponRepository.findByCode(code)
                                 .filter(e -> e.getStatus() == Status.USED)
+                                .filter(e -> e.getUserNo().equals(userNo))
                                 .orElseThrow(() -> new CouponNotFoundByStatusException(Status.USED))
                                 .cancelCoupon()));
     }

@@ -1,4 +1,4 @@
-package com.kakaopay.coupon.api.user.model.request;
+package com.kakaopay.coupon.api.auth.model.request;
 
 import lombok.Getter;
 import lombok.ToString;

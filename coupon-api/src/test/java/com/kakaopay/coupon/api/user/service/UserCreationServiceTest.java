@@ -2,6 +2,7 @@ package com.kakaopay.coupon.api.user.service;
 
 import com.kakaopay.coupon.api.persistence.entity.UserEntity;
 import com.kakaopay.coupon.api.persistence.repository.UserRepository;
+import com.kakaopay.coupon.api.user.advice.exception.UserCreationFailureException;
 import com.kakaopay.coupon.api.user.model.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,9 +34,9 @@ class UserCreationServiceTest {
                 .willReturn(true);
 
         // then
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(UserCreationFailureException.class, () -> {
             // when
-            userCreationService.save("testid", "testpass");
+            userCreationService.save("testid", "testpass", true);
         });
     }
 
@@ -55,7 +56,7 @@ class UserCreationServiceTest {
                 .willReturn(userEntity);
 
         // when
-        UserDto userDto = userCreationService.save("test", "testpass");
+        UserDto userDto = userCreationService.save("test", "testpass", false);
 
         // then
         assertEquals(userEntity.getNo(), userDto.getNo());

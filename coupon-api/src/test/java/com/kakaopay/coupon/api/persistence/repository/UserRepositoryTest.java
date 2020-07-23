@@ -28,6 +28,21 @@ class UserRepositoryTest {
     }
 
     @Test
+    void 존재하는_id로_조회() {
+        testEntityManager.persistAndFlush(savedUserEntity);
+        UserEntity userEntity = userRepository.findById("testid").orElseThrow(RuntimeException::new);
+        assertEquals(savedUserEntity.getId(), userEntity.getId());
+        assertEquals(savedUserEntity.getPassword(), userEntity.getPassword());
+    }
+
+    @Test
+    void 존재하지_않는_id로_조회() {
+        assertThrows(RuntimeException.class, () -> {
+            userRepository.findById("testId").orElseThrow(RuntimeException::new);
+        });
+    }
+
+    @Test
     void id가_존재하는지_확인() {
         testEntityManager.persistAndFlush(savedUserEntity);
         assertTrue(userRepository.existsById("testid"));
@@ -36,8 +51,8 @@ class UserRepositoryTest {
 
     @Test
     void no가_존재하는지_확인() {
-        testEntityManager.persistAndFlush(savedUserEntity);
-        assertTrue(userRepository.existsByNo(1L));
-        assertFalse(userRepository.existsByNo(2L));
+        long no = testEntityManager.persistAndGetId(savedUserEntity, Long.class);
+        assertTrue(userRepository.existsByNo(no));
+        assertFalse(userRepository.existsByNo(0L));
     }
 }

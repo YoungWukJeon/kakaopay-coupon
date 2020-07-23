@@ -19,16 +19,6 @@ spring:
     autoconfigure:
         exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 
-#    redis:
-#        host: 52.78.25.16
-#        port: 6379
-
-#    session:
-#        store-type: redis
-#        timeout: 120m # infinite(-1)
-#        redis:
-#            namespace: spring:session
-
 jwt:
     secret-key:
-        user-registration: WIREbeT90oV8akG86iaQKRI0JPgEm6Gp
+        authentication: WIREbeT90oV8akG86iaQKRI0JPgEm6Gp
