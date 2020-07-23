@@ -17,6 +17,13 @@ dependencies {
     // MySQL
     compile 'mysql:mysql-connector-java:8.0.20'
 
+
+    // Gson
+    compile 'com.google.code.gson:gson:2.8.5'
+
+    // kafka-client
+    compile 'org.apache.kafka:kafka-clients:2.0.1'
+
     testCompile 'org.mockito:mockito-core:3.3.3'
     testCompile 'org.mockito:mockito-junit-jupiter:3.3.3'
 
