@@ -3,6 +3,7 @@ package com.kakaopay.coupon.api.user.advice;
 import com.kakaopay.coupon.api.common.ApiService;
 import com.kakaopay.coupon.api.common.model.ApiResponse;
 import com.kakaopay.coupon.api.common.model.ExceptionDto;
+import com.kakaopay.coupon.api.user.advice.exception.UserCreationFailureException;
 import com.kakaopay.coupon.api.user.advice.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,12 @@ public class UserExceptionAdvice {
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected ApiResponse userNotFound(HttpServletRequest request, UserNotFoundException exception) {
+        return generateInternalServerError(request.getContextPath(), exception.getMessage());
+    }
+
+    @ExceptionHandler(UserCreationFailureException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ApiResponse userCreationFailure(HttpServletRequest request, UserCreationFailureException exception) {
         return generateInternalServerError(request.getContextPath(), exception.getMessage());
     }
 
