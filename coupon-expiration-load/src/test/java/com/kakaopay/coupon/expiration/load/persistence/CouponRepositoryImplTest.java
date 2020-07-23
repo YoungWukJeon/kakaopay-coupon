@@ -81,14 +81,14 @@ class CouponRepositoryImplTest {
         assertEquals(expectedCouponEntities.size(), couponEntities.size());
         IntStream.range(0, expectedCouponEntities.size())
                 .forEach(i -> {
-                    assertEquals(expectedCouponEntities.get(i).getNo(), expectedCouponEntities.get(i).getNo());
-                    assertEquals(expectedCouponEntities.get(i).getCode(), expectedCouponEntities.get(i).getCode());
-                    assertEquals(expectedCouponEntities.get(i).getCreatedDate(), expectedCouponEntities.get(i).getCreatedDate());
-                    assertEquals(expectedCouponEntities.get(i).getPublishedDate(), expectedCouponEntities.get(i).getPublishedDate());
-                    assertEquals(expectedCouponEntities.get(i).getUsedDate(), expectedCouponEntities.get(i).getUsedDate());
-                    assertEquals(expectedCouponEntities.get(i).getExpirationDate(), expectedCouponEntities.get(i).getExpirationDate());
-                    assertEquals(expectedCouponEntities.get(i).getStatus(), expectedCouponEntities.get(i).getStatus());
-                    assertEquals(expectedCouponEntities.get(i).getUserNo(), expectedCouponEntities.get(i).getUserNo());
+                    assertEquals(expectedCouponEntities.get(i).getNo(), couponEntities.get(i).getNo());
+                    assertEquals(expectedCouponEntities.get(i).getCode(), couponEntities.get(i).getCode());
+                    assertEquals(expectedCouponEntities.get(i).getCreatedDate(), couponEntities.get(i).getCreatedDate());
+                    assertEquals(expectedCouponEntities.get(i).getPublishedDate(), couponEntities.get(i).getPublishedDate());
+                    assertEquals(expectedCouponEntities.get(i).getUsedDate(), couponEntities.get(i).getUsedDate());
+                    assertEquals(expectedCouponEntities.get(i).getExpirationDate(), couponEntities.get(i).getExpirationDate());
+                    assertEquals(expectedCouponEntities.get(i).getStatus(), couponEntities.get(i).getStatus());
+                    assertEquals(expectedCouponEntities.get(i).getUserNo(), couponEntities.get(i).getUserNo());
                 });
     }
 

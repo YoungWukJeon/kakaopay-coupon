@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class CouponExpirationLoadApplication {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         DataSource dataSource = new DataSource(
-                "jdbc:mysql://localhost:3307/coupon_system?serverTimezone=UTC&characterEncoding=UTF-8",
+                "jdbc:mysql://localhost:3307/coupon_system?serverTimezone=Asia/Seoul&characterEncoding=UTF-8",
                 "couponadmin",
                 "couponpass");
         dataSource.connect();

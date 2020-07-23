@@ -19,9 +19,7 @@ public class CouponRepositoryImpl implements CouponRepository {
 
     @Override
     public List<CouponEntity> findAllByStatusAndExpirationDateBefore(Status status, LocalDateTime now) {
-        String query = "SELECT * FROM " + tableName + " WHERE status = ? and expiration_date <= ?";
-        System.out.println("Execution Query: SELECT * FROM " + tableName +
-                " WHERE status = '" + status + "' AND expiration_date <= '" + Timestamp.valueOf(now) + "'");
+        String query = "SELECT * FROM " + tableName + " WHERE status = ? AND expiration_date <= ?";
         List<CouponEntity> couponEntities = new ArrayList<> ();
         LocalDateTime start = LocalDateTime.now();
 
@@ -29,6 +27,7 @@ public class CouponRepositoryImpl implements CouponRepository {
             PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(query);
             preparedStatement.setString(1, status.name());
             preparedStatement.setTimestamp(2, Timestamp.valueOf(now));
+            System.out.println("Execution Query: " + preparedStatement.toString().replace(preparedStatement.getClass().getName() + ": ", ""));
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
@@ -57,17 +56,15 @@ public class CouponRepositoryImpl implements CouponRepository {
 
     @Override
     public Integer updateAllByStatusAndExpirationDateBefore(Status afterStatus, Status beforeStatus, LocalDateTime now) {
-        String query = "UPDATE " + tableName + " SET status = ? WHERE status = ? and expiration_date <= ?";
-        System.out.println("Execution Query: UPDATE " + tableName + " SET status = '" + afterStatus +
-                "' WHERE status = '" + beforeStatus + "' AND expiration_date <= '" + Timestamp.valueOf(now) + "'");
+        String query = "UPDATE " + tableName + " SET status = ? WHERE status = ? AND expiration_date <= ?";
         LocalDateTime start = LocalDateTime.now();
         int updateCount = 0;
-
         try {
             PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(query);
             preparedStatement.setString(1, afterStatus.name());
             preparedStatement.setString(2, beforeStatus.name());
             preparedStatement.setTimestamp(3, Timestamp.valueOf(now));
+            System.out.println("Execution Query: " + preparedStatement.toString().replace(preparedStatement.getClass().getName() + ": ", ""));
             updateCount = preparedStatement.executeUpdate();
         } catch (SQLException exception) {
             System.out.println("Query Execution Fail");
