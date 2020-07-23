@@ -67,7 +67,7 @@ class UserServiceTest {
         // then
         assertDoesNotThrow(() -> {
             // when
-            userService.checkExistsById(anyLong());
+            userService.checkExistsByNo(anyLong());
         });
     }
 
@@ -81,7 +81,7 @@ class UserServiceTest {
         // then
         assertThrows(UserNotFoundException.class, () -> {
             // when
-            userService.checkExistsById(anyLong());
+            userService.checkExistsByNo(anyLong());
         });
     }
 }

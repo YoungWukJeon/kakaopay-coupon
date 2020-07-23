@@ -13,13 +13,11 @@ class UserDtoTest {
                         .no(1L)
                         .id("testid")
                         .password("testpass")
-                        .salt("testsalt")
                         .build();
         UserDto userDto = UserDto.from(userEntity);
 
         assertEquals(userEntity.getNo(), userDto.getNo());
         assertEquals(userEntity.getId(), userDto.getId());
         assertEquals(userEntity.getPassword(), userDto.getPassword());
-        assertEquals(userEntity.getSalt(), userDto.getSalt());
     }
 }

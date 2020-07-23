@@ -1,4 +1,4 @@
-package com.kakaopay.coupon.api.config;
+package com.kakaopay.coupon.api.common.config;
 
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.Components;

@@ -21,7 +21,7 @@ public class CouponUpdateService {
 
     @Transactional
     public CouponDto publishToUser(Long userNo) {
-        userService.checkExistsById(userNo);
+        userService.checkExistsByNo(userNo);
         return CouponDto.from(
                 couponRepository.saveAndFlush(
                         couponRepository.findTop1ByStatus(Status.CREATED)

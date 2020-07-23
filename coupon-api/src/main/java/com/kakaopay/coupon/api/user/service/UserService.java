@@ -6,6 +6,8 @@ import com.kakaopay.coupon.api.user.model.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
     @Autowired
@@ -18,10 +20,14 @@ public class UserService {
     }
 
     // TODO: 2020-07-20 여기 로직 변경하는게 나을듯
-    public void checkExistsById(Long no) {
+    public void checkExistsByNo(Long no) {
         if (userRepository.existsById(no)) {
             return;
         }
         throw new UserNotFoundException();
+    }
+
+    public boolean checkExistsById(String id) {
+        return userRepository.existsById(id);
     }
 }

@@ -51,7 +51,7 @@ class CouponUpdateServiceTest {
 
         willDoNothing()
                 .given(userService)
-                .checkExistsById(userNo);
+                .checkExistsByNo(userNo);
         given(couponRepository.findTop1ByStatus(status))
                 .willReturn(Optional.of(couponEntity));
         given(couponRepository.saveAndFlush(any()))
@@ -78,7 +78,7 @@ class CouponUpdateServiceTest {
         Status status = Status.CREATED;
         willDoNothing()
                 .given(userService)
-                .checkExistsById(userNo);
+                .checkExistsByNo(userNo);
         given(couponRepository.findTop1ByStatus(status))
                 .willReturn(Optional.empty());
 

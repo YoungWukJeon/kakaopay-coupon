@@ -13,9 +13,8 @@ public class UserDto {
     private final Long no;
     private final String id;
     private final String password;
-    private final String salt;
 
     public static UserDto from(UserEntity userEntity) {
-        return new UserDto(userEntity.getNo(), userEntity.getId(), userEntity.getPassword(), userEntity.getSalt());
+        return new UserDto(userEntity.getNo(), userEntity.getId(), userEntity.getPassword());
     }
 }

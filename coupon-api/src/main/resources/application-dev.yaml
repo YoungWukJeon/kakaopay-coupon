@@ -2,7 +2,7 @@ spring:
     datasource:
         platform: mysql
         driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://localhost:3307/coupon_system?serverTimezone=UTC&characterEncoding=UTF-8
+        url: jdbc:mysql://localhost:3307/coupon_system?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
         username: couponadmin
         password: couponpass
         sql-script-encoding: UTF-8
@@ -12,6 +12,24 @@ spring:
         hibernate:
             ddl-auto: update
         show-sql: true
+
+    autoconfigure:
+        exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+#    redis:
+#        host: 52.78.25.16
+#        port: 6379
+
+#    session:
+#        store-type: redis
+#        timeout: 120m # infinite(-1)
+#        redis:
+#            namespace: spring:session
+
+
+jwt:
+    secret-key:
+        user-registration: WIREbeT90oV8akG86iaQKRI0JPgEm6Gp
 
 server:
     tomcat:

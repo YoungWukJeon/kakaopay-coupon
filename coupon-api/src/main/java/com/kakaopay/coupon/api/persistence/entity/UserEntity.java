@@ -23,14 +23,10 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "salt", length = 40, nullable = false)
-    private String salt;
-
     @Builder
-    public UserEntity(Long no, String id, String password, String salt) {
+    public UserEntity(Long no, String id, String password) {
         this.no = no;
         this.id = id;
         this.password = password;
-        this.salt = salt;
     }
 }
