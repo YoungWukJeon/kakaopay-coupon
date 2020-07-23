@@ -2,6 +2,7 @@ package com.kakaopay.coupon.api.coupon;
 
 import com.kakaopay.coupon.api.common.ApiService;
 import com.kakaopay.coupon.api.common.model.ApiResponse;
+import com.kakaopay.coupon.api.coupon.advice.exception.CouponAccessDeniedException;
 import com.kakaopay.coupon.api.coupon.advice.exception.CouponStatusNotFoundException;
 import com.kakaopay.coupon.api.coupon.model.response.CouponCodeResponse;
 import com.kakaopay.coupon.api.coupon.service.CouponCreationService;
@@ -9,10 +10,14 @@ import com.kakaopay.coupon.api.coupon.service.CouponService;
 import com.kakaopay.coupon.api.coupon.service.CouponUpdateService;
 import com.kakaopay.coupon.api.persistence.entity.CouponEntity.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/coupon")
@@ -59,6 +64,19 @@ public class CouponController {
 
     @GetMapping(value = "/user/{userNo}")
     public ApiResponse getCouponsByUserNo(@PathVariable Long userNo) {
+        Long tokenUserNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<String> authorities =
+                SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getAuthorities()
+                        .stream()
+                        .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        if (!userNo.equals(tokenUserNo) && !authorities.contains("ROLE_ADMIN")) {
+            throw new CouponAccessDeniedException();
+        }
+
         return apiService.createSuccessResponse(
                 couponService.findAllByUserNo(userNo));
     }

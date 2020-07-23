@@ -23,7 +23,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 생성하지 않기
                 .and()
                     .authorizeRequests()
-                        .antMatchers("/coupon/{code}/status/{status}")
+                        .antMatchers("/coupon/{code}/status/{status}", "/coupon/user/{userNo}")
                             .hasRole("USER")
                         .antMatchers("/auth/**", "/h2-console/**", "/health",
                                 "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs")

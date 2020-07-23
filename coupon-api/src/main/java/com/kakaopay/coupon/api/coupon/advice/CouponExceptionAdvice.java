@@ -47,6 +47,12 @@ public class CouponExceptionAdvice {
         return generateInternalServerError(request.getServletPath(), exception.getMessage());
     }
 
+    @ExceptionHandler(CouponAccessDeniedException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ApiResponse couponAccessDenied(HttpServletRequest request, CouponAccessDeniedException exception) {
+        return generateInternalServerError(request.getServletPath(), exception.getMessage());
+    }
+
     private ApiResponse generateInternalServerError(String contextPath, String message) {
         return apiService.createFailureResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
