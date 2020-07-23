@@ -19,7 +19,7 @@
         - input : 쿠폰 번호
     - [x] 발급된 쿠폰 중 당일 만료된 전체 쿠폰 목록을 조회하는 API를 구현
 
-- 선택 [상세내용](https://github.com/YoungWukJeon/kakaopay-coupon/tree/master/coupon-expiration-notification-api)
+- 선택 [상세내용](https://github.com/YoungWukJeon/kakaopay-coupon/tree/master/coupon-expiration-notification-load)
     - [x] 발급된 쿠폰 중 만료 3일전 사용자에게 메세지("쿠폰이 3일 후 만료됩니다.")를 발송하는 기능을 구현
         - 실제로 메세지를 발송하는 것이 아닌 stdout 등으로 출력
 
