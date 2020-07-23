@@ -20,7 +20,7 @@ project(':coupon-api') {
 }
 
 project(':coupon-expiration-load') {
-//    dependencies {
-//        compile project(':coupon-common')
-//    }
+}
+
+project(':coupon-expiration-notification-load') {
 }
