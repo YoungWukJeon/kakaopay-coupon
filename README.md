@@ -41,6 +41,25 @@
     - [ ] 대용량 트래픽(TPS 10K 이상)을 고려한 시스템 구현
     - [ ] 성능 테스트 결과 / 피드백
 
+## 실행 방법
+
+- 현재 Repository의 루트 경로에서 deploy 디렉터리 안에 들어간다.
+- local 환경에서 api를 테스트한다면 
+    - `java -Dspring.profiles.active=local -Duser.timezone=Asia/Seoul -jar coupon-api.jar` 실행
+- dev 환경에서 api를 테스트한다면 
+    - `docker-compose up -d`를 통해 mysql을 띄움
+    - `java -Dspring.profiles.active=dev -Duser.timezone=Asia/Seoul -jar coupon-api.jar` 실행
+- 기존 계정을 쓰던 새로운 계정을 만들던 한다.
+- 여러 api를 테스트
+    - 쿠폰은 생성을 하고 사용자에게 지급을 해야 만료일이 생긴다.
+    - 현재 설정된 만료일은 지급일 기준 +3일
+- 알림 발송 배치를 실행 (`java -jar coupon-expiration-notification-load.jar`)
+    - 현재 날짜 기준으로 3일 후에 만료되는 쿠폰에 대해서 조회된다. 
+    - 과제에서는 만료일과 알림일이 둘 다 3일로 지정했기 때문에 바로 조회가 된다.
+- 만료일이 지났지만 아직 PUBLISHED 상태인 쿠폰을 EXPIRED로 바꿔주는 배치를 실행 (`java -jar coupon-expiration-load.jar`)
+    - 과제에는 없는 내용
+    - 데이터베이스에 임의로 데이터를 넣지 않는 이상 테스트하기 힘들다.
+
 ## 문제 해결 전략
 
 - 랜덤한 쿠폰 번호 생성(추후 생성 전략 변경 고려)
